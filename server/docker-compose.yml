@@ -1,0 +1,22 @@
+version: '3.8'
+
+networks:
+  spring-cloud-network:
+    driver: bridge
+
+services:
+
+  concessionaria-server:
+    container_name: concessionaria-server
+    image: concessionaria:1.0.3
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      DB_USER: admin
+      DB_PASS: admin_vini
+      DB_HOST: mysql
+    ports:
+      - 8080:8080
+    networks:
+      - spring-cloud-network
