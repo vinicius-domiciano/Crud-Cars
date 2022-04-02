@@ -1,0 +1,32 @@
+<table class="table_list">
+    <thead class="table_content">
+        <tr class="table_row">
+            <th class="table_col">Id</th>
+            <th class="table_col">Name</th>
+            <th class="table_col">Company</th>
+            <th class="table_col">Created At</th>
+            <th class="table_col">Price</th>
+            <th class="table_col actions">Actions</th>
+        </tr>
+    </thead>
+    <tbody class="table_content">
+        <tr class="table_row" *ngFor="let car of cars">
+            <td class="table_col">{{ car.id }}</td>
+            <td class="table_col">{{ car.name }}</td>
+            <td class="table_col">{{ car.company }}</td>
+            <td class="table_col">{{ car.dateCreated }}</td>
+            <td class="table_col">${{ car.price }}</td>
+            <td class="table_col actions">
+                <button class="button_action">
+                    <i class="ic_button ic_find"></i>
+                </button>
+                <button class="button_action">
+                    <i class="ic_button ic_update"></i>
+                </button>
+                <button (click)="deleteCar(car.id)" class="button_action">
+                    <i class="ic_button ic_delete"></i>
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>

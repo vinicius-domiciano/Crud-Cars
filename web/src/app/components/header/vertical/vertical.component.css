@@ -1,0 +1,8 @@
+.menu_vertical {
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-color: var(--primary-color);
+	width: 64px;
+	height: 100%;
+}
