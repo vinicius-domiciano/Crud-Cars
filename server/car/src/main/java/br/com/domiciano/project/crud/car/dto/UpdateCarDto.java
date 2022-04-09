@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,8 +16,10 @@ import java.util.Calendar;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class UpdateCarDto {
 
+    @Min(value = 1, message = "Id deve ser maior que 0")
     @NotNull(message = "Necessario informar o id")
     private Long id;
 
@@ -32,7 +35,7 @@ public class UpdateCarDto {
     @NotNull(message = "Necessario informar o ano")
     private Integer year;
 
-    @Min(value = 0, message = "Necessario informar o preco maior que 0")
+    @Min(value = 1, message = "Necessario informar o preco maior que 0")
     @NotNull(message = "Necessario informar o preco")
     private BigDecimal price;
 
