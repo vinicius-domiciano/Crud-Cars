@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.Set;
 
 @RestController
-@RequestMapping(path = "/companies")
+@RequestMapping(path = "/api/companies")
 public class CompanyController {
 
     @Autowired
