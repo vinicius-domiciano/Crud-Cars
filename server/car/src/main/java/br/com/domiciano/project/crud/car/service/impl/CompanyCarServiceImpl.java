@@ -12,7 +12,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 
 @Service
 public class CompanyCarServiceImpl implements CompanyCarService {
@@ -23,10 +23,10 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     private static final ModelMapper MAPPER = new ModelMapper();
 
     @Override
-    public Set<ListCompanyDto> listarMarcaCarro() {
+    public List<ListCompanyDto> listarMarcaCarro() {
         return MAPPER.map(
                 this.repository.findAll(),
-                new TypeToken<Set<ListCompanyDto>>() {}.getType()
+                new TypeToken<List<ListCompanyDto>>() {}.getType()
         );
     }
 

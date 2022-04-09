@@ -4,10 +4,10 @@ import br.com.domiciano.project.crud.car.dto.CadastroMarcaCarroDto;
 import br.com.domiciano.project.crud.car.dto.BuscaMarcaCarroDto;
 import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
 
-import java.util.Set;
+import java.util.List;
 
 public interface CompanyCarService {
-    Set<ListCompanyDto> listarMarcaCarro();
+    List<ListCompanyDto> listarMarcaCarro();
 
     BuscaMarcaCarroDto buscarPorId(Long id);
 
