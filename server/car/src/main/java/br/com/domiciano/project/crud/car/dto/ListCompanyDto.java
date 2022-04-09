@@ -1,13 +1,15 @@
 package br.com.domiciano.project.crud.car.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ListaMarcaCarroDto {
+@AllArgsConstructor
+public class ListCompanyDto {
 
     private Long id;
-    private String nomeMarca;
+    private String name;
 
 }

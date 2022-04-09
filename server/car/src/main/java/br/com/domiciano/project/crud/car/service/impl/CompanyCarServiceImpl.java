@@ -2,7 +2,7 @@ package br.com.domiciano.project.crud.car.service.impl;
 
 import br.com.domiciano.project.crud.car.dto.BuscaMarcaCarroDto;
 import br.com.domiciano.project.crud.car.dto.CadastroMarcaCarroDto;
-import br.com.domiciano.project.crud.car.dto.ListaMarcaCarroDto;
+import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
 import br.com.domiciano.project.crud.car.entity.Company;
 import br.com.domiciano.project.crud.car.service.CompanyCarService;
 import br.com.domiciano.project.crud.base.exceptions.NotFoundException;
@@ -23,10 +23,10 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     private static final ModelMapper MAPPER = new ModelMapper();
 
     @Override
-    public Set<ListaMarcaCarroDto> listarMarcaCarro() {
+    public Set<ListCompanyDto> listarMarcaCarro() {
         return MAPPER.map(
                 this.repository.findAll(),
-                new TypeToken<Set<ListaMarcaCarroDto>>() {}.getType()
+                new TypeToken<Set<ListCompanyDto>>() {}.getType()
         );
     }
 

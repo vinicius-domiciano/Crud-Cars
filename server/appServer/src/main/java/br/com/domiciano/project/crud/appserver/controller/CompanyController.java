@@ -2,7 +2,7 @@ package br.com.domiciano.project.crud.appserver.controller;
 
 import br.com.domiciano.project.crud.car.dto.BuscaMarcaCarroDto;
 import br.com.domiciano.project.crud.car.dto.CadastroMarcaCarroDto;
-import br.com.domiciano.project.crud.car.dto.ListaMarcaCarroDto;
+import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
 import br.com.domiciano.project.crud.car.service.CompanyCarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ public class CompanyController {
     private CompanyCarService companyCarService;
 
     @GetMapping
-    public ResponseEntity<Set<ListaMarcaCarroDto>> listAllCompany() {
+    public ResponseEntity<Set<ListCompanyDto>> listAllCompany() {
         return new ResponseEntity<>(companyCarService.listarMarcaCarro(), HttpStatus.OK);
     }
 
