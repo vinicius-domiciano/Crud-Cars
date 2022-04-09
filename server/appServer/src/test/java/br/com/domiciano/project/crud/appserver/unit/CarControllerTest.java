@@ -8,6 +8,7 @@ import br.com.domiciano.project.crud.base.exceptions.handle.ExceptionHandle;
 import br.com.domiciano.project.crud.car.dto.FindCarDto;
 import br.com.domiciano.project.crud.car.dto.ListCarDto;
 import br.com.domiciano.project.crud.car.dto.SaveCarDto;
+import br.com.domiciano.project.crud.car.dto.UpdateCarDto;
 import br.com.domiciano.project.crud.car.service.CarService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,16 +33,19 @@ import static org.springframework.http.HttpStatus.*;
 
 @WebMvcTest
 @CustomInitTest
-public class CarControllerTest {
+class CarControllerTest {
 
-    @Autowired
-    private CarController carController;
-
-    @Autowired
-    private ExceptionHandle exceptionHandle;
+    private final CarController carController;
+    private final ExceptionHandle exceptionHandle;
 
     @MockBean
     private CarService carService;
+
+    @Autowired
+    public CarControllerTest(CarController carController, ExceptionHandle exceptionHandle) {
+        this.carController = carController;
+        this.exceptionHandle = exceptionHandle;
+    }
 
     @BeforeEach
     public void setup() {
@@ -49,7 +53,7 @@ public class CarControllerTest {
     }
 
     @Test
-    public void haveToReturnSuccess_inListCars() throws JsonProcessingException {
+    void haveToReturnSuccess_inListCars() throws JsonProcessingException {
         ListCarDto listCarDto1 = new ListCarDto(1L, "CarName1", 78000.00, "MyTestCompany", Calendar.getInstance());
         ListCarDto listCarDto2 = new ListCarDto(2L, "CarName2", 88000.00, "MyTestCompany", Calendar.getInstance());
         when(this.carService.listCars())
@@ -71,7 +75,7 @@ public class CarControllerTest {
     }
 
     @Test
-    public void haveToReturnSuccess_inFindCardById() throws JsonProcessingException {
+    void haveToReturnSuccess_inFindCardById() throws JsonProcessingException {
         FindCarDto findCarDto = new FindCarDto(1L, Calendar.getInstance(), Calendar.getInstance(), new BigDecimal("150000"), "CarName", "MyTestCompany", 2022);
 
         when(this.carService.findCarById(1L))
@@ -92,8 +96,7 @@ public class CarControllerTest {
     }
 
     @Test
-    public void haveToReturnError404WhenSetInvalidId_inFindCardById() throws JsonProcessingException {
-
+    void haveToReturnError404WhenSetInvalidId_inFindCardById() {
         var now = Calendar.getInstance();
 
         doThrow(new NotFoundException(String.format("Car not found for id[%s]", 1L)))
@@ -118,7 +121,7 @@ public class CarControllerTest {
     }
 
     @Test
-    public void haveToReturnSuccess_inSave() throws JsonProcessingException {
+    void haveToReturnSuccess_inSave() throws JsonProcessingException {
         var saveCarDto = new SaveCarDto(null, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"), null, null);
         var carDtoSaved = new SaveCarDto(1L, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"), Calendar.getInstance(), Calendar.getInstance());
 
@@ -144,7 +147,7 @@ public class CarControllerTest {
     }
 
     @Test
-    public void haveToReturnError400WhenSetInvalidFieldInBody_inSave() {
+    void haveToReturnError400WhenSetInvalidFieldInBody_inSave() {
         var saveCarDto = new SaveCarDto();
         var now = Calendar.getInstance();
 
@@ -176,7 +179,7 @@ public class CarControllerTest {
     }
 
     @Test
-    public void haveToReturnError400WhenSetInvalidFieldsNumberInBody_inSave() {
+    void haveToReturnError400WhenSetInvalidFieldsNumberInBody_inSave() {
         var saveCarDto = new SaveCarDto(null, "Tests", "MyCompanyTest", 1800, new BigDecimal("0.0"), null, null);
         var now = Calendar.getInstance();
 
@@ -190,6 +193,125 @@ public class CarControllerTest {
                 .body(saveCarDto)
                 .when()
                 .post("api/cars")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(BAD_REQUEST.value())
+                .contentType(JSON)
+                .extract()
+                .as(ErrorExceptionDto.class);
+
+        assertEquals(errors.size(), errorDto.getMessages().size());
+        assertTrue(errorDto.getMessages().containsAll(errors));
+        assertEquals("/api/cars", errorDto.getPath());
+        assertEquals(BAD_REQUEST.toString(), errorDto.getStatusCode());
+        assertTrue(now.before(errorDto.getTimestamp()));
+    }
+
+    @Test
+    void haveToReturnSuccess_inUpdate() throws JsonProcessingException {
+        var updateCarDto = new UpdateCarDto(1L, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"),  null);
+        var carDtoUpdated = new UpdateCarDto(1L, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"), Calendar.getInstance());
+
+        when(this.carService.update(updateCarDto))
+                .thenReturn(carDtoUpdated);
+
+        var bodyResult = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
+                .writeValueAsString(carDtoUpdated);
+
+        given().contentType(JSON)
+                .accept(JSON)
+                .body(updateCarDto)
+                .when()
+                .put("api/cars")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(OK.value())
+                .contentType(JSON)
+                .body(is(equalTo(bodyResult)));
+
+    }
+
+    @Test
+    void haveToReturnError400WhenSetInvalidFieldInBody_inUpdate() {
+        var updateCarDto = new UpdateCarDto();
+        var now = Calendar.getInstance();
+
+        var errors = Set.of(
+                "Necessario informar o id",
+                "Necessario informar o ano",
+                "Necessario informar o nome",
+                "Necessario informar o preco",
+                "Necessario informar a marca"
+        );
+
+        var errorDto = given().contentType(JSON)
+                .accept(JSON)
+                .body(updateCarDto)
+                .when()
+                .put("api/cars")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(BAD_REQUEST.value())
+                .contentType(JSON)
+                .extract()
+                .as(ErrorExceptionDto.class);
+
+        assertEquals(errors.size(), errorDto.getMessages().size());
+        assertTrue(errorDto.getMessages().containsAll(errors));
+        assertEquals("/api/cars", errorDto.getPath());
+        assertEquals(BAD_REQUEST.toString(), errorDto.getStatusCode());
+        assertTrue(now.before(errorDto.getTimestamp()));
+    }
+
+    @Test
+    void haveToReturn404WhenUpdateInvalidId_inUpdate() {
+        var updateCarDto = new UpdateCarDto(1L, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"),  null);
+        var now = Calendar.getInstance();
+
+        doThrow(new NotFoundException(String.format("Car not found for id[%s]", 1L)))
+                .when(this.carService)
+                .update(updateCarDto);
+
+        var errorDto = given().contentType(JSON)
+                .accept(JSON)
+                .body(updateCarDto)
+                .when()
+                .put("api/cars")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(NOT_FOUND.value())
+                .contentType(JSON)
+                .extract()
+                .as(ErrorExceptionDto.class);
+
+        assertEquals(1, errorDto.getMessages().size());
+        assertTrue(errorDto.getMessages().contains("Car not found for id[1]"));
+        assertEquals("/api/cars", errorDto.getPath());
+        assertEquals(NOT_FOUND.toString(), errorDto.getStatusCode());
+        assertTrue(now.before(errorDto.getTimestamp()));
+    }
+
+    @Test
+    void haveToReturnError400WhenSetInvalidFieldsNumberInBody_inUpdate() {
+        var updateCarDto = new UpdateCarDto(0L, "Tests", "MyCompanyTest", 1800, new BigDecimal("0.0"), null);
+        var now = Calendar.getInstance();
+
+        var errors = Set.of(
+                "Id deve ser maior que 0",
+                "Necessario informar o ano maior que 1900",
+                "Necessario informar o preco maior que 0"
+        );
+
+        var errorDto = given().contentType(JSON)
+                .accept(JSON)
+                .body(updateCarDto)
+                .when()
+                .put("api/cars")
                 .then()
                 .log()
                 .ifValidationFails()
