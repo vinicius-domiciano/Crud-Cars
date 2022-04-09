@@ -327,4 +327,42 @@ class CarControllerTest {
         assertTrue(now.before(errorDto.getTimestamp()));
     }
 
+    @Test
+    void haveToReturnSuccess_inDelete() {
+
+        given().accept(JSON)
+                .when()
+                .delete("api/cars/{id}", 1L)
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(NO_CONTENT.value());
+
+    }
+
+    @Test
+    void haveToReturnError404WhenSendInvalidId_inDelete() {
+        var now = Calendar.getInstance();
+
+        doThrow(new NotFoundException(String.format("Car not found for id[%s]", 1L)))
+                .when(this.carService)
+                .delete(1L);
+
+        var errorDto = given().accept(JSON)
+                .when()
+                .delete("api/cars/{id}", 1L)
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(NOT_FOUND.value())
+                .contentType(JSON)
+                .extract()
+                .as(ErrorExceptionDto.class);
+
+        assertEquals(1, errorDto.getMessages().size());
+        assertTrue(errorDto.getMessages().contains("Car not found for id[1]"));
+        assertEquals("/api/cars/1", errorDto.getPath());
+        assertEquals(NOT_FOUND.toString(), errorDto.getStatusCode());
+        assertTrue(now.before(errorDto.getTimestamp()));
+    }
 }
