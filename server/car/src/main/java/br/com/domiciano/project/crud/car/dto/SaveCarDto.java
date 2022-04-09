@@ -34,7 +34,7 @@ public class SaveCarDto {
     @NotNull(message = "Necessario informar o ano")
     private Integer year;
 
-    @Min(value = 0, message = "Necessario informar o preco maior que 0")
+    @Min(value = 1, message = "Necessario informar o preco maior que 0")
     @NotNull(message = "Necessario informar o preco")
     private BigDecimal price;
 
