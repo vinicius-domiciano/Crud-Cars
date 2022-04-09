@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/cars")
+@RequestMapping(value = "/api/cars")
 public class CarController {
 
     @Autowired
@@ -25,7 +25,7 @@ public class CarController {
         return new ResponseEntity<>(this.carService.listCars(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<FindCarDto> findCarById(@PathVariable(name = "id") Long id) {
         return new ResponseEntity<>(this.carService.findCarById(id), HttpStatus.OK);
     }
@@ -41,7 +41,7 @@ public class CarController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(value = "/{id}")
     public void delete(@PathVariable(name = "id") Long id) {
         this.carService.delete(id);
     }

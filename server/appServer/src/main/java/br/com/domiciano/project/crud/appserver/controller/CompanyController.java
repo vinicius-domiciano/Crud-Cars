@@ -6,30 +6,31 @@ import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
 import br.com.domiciano.project.crud.car.service.CompanyCarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Set;
+import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/companies")
+@RequestMapping(value = "/api/companies", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class CompanyController {
 
     @Autowired
     private CompanyCarService companyCarService;
 
     @GetMapping
-    public ResponseEntity<Set<ListCompanyDto>> listAllCompany() {
+    public ResponseEntity<List<ListCompanyDto>> listAllCompany() {
         return new ResponseEntity<>(companyCarService.listarMarcaCarro(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<BuscaMarcaCarroDto> findCompanyById(@PathVariable(name = "id") Long id) {
         return new ResponseEntity<>(companyCarService.buscarPorId(id), HttpStatus.OK);
     }
 
-    @PostMapping(path = "")
+    @PostMapping(value = "")
     public ResponseEntity<CadastroMarcaCarroDto> saveCompany(@RequestBody @Valid CadastroMarcaCarroDto cadastroMarcaCarroDto) {
         return new ResponseEntity<>(companyCarService.cadastroMarcaCarro(cadastroMarcaCarroDto), HttpStatus.CREATED);
     }
