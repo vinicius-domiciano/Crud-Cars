@@ -6,7 +6,7 @@ import br.com.domiciano.project.crud.car.dto.ListaMarcaCarroDto;
 
 import java.util.Set;
 
-public interface MarcaCarroService {
+public interface CompanyCarService {
     Set<ListaMarcaCarroDto> listarMarcaCarro();
 
     BuscaMarcaCarroDto buscarPorId(Long id);

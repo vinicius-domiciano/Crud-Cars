@@ -1,6 +1,6 @@
 package br.com.domiciano.project.crud.appserver.unit.annotation;
 
-import br.com.domiciano.project.crud.appserver.controller.MarcaController;
+import br.com.domiciano.project.crud.appserver.controller.CompanyController;
 import br.com.domiciano.project.crud.car.repository.CarRepository;
 import br.com.domiciano.project.crud.car.repository.MarcaCarroRepository;
 import br.com.domiciano.project.crud.car.service.CarService;
@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @MockBeans({
         @MockBean(CarService.class),
         @MockBean(CarRepository.class),
-        @MockBean(MarcaController.class),
+        @MockBean(CompanyController.class),
         @MockBean(MarcaCarroRepository.class)
 })
 public @interface CustomInitTest {

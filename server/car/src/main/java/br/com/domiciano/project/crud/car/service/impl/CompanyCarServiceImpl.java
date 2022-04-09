@@ -4,7 +4,7 @@ import br.com.domiciano.project.crud.car.dto.BuscaMarcaCarroDto;
 import br.com.domiciano.project.crud.car.dto.CadastroMarcaCarroDto;
 import br.com.domiciano.project.crud.car.dto.ListaMarcaCarroDto;
 import br.com.domiciano.project.crud.car.entity.Company;
-import br.com.domiciano.project.crud.car.service.MarcaCarroService;
+import br.com.domiciano.project.crud.car.service.CompanyCarService;
 import br.com.domiciano.project.crud.base.exceptions.NotFoundException;
 import br.com.domiciano.project.crud.car.repository.MarcaCarroRepository;
 import org.modelmapper.ModelMapper;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 @Service
-public class MarcaCarroServiceImpl implements MarcaCarroService {
+public class CompanyCarServiceImpl implements CompanyCarService {
 
     @Autowired
     private MarcaCarroRepository repository;
