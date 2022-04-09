@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;
@@ -93,7 +94,7 @@ public class CarControllerTest {
     @Test
     public void haveToReturnError404WhenSetInvalidId_inFindCardById() throws JsonProcessingException {
 
-        Calendar now = Calendar.getInstance();
+        var now = Calendar.getInstance();
 
         doThrow(new NotFoundException(String.format("Car not found for id[%s]", 1L)))
                 .when(this.carService)
@@ -124,7 +125,7 @@ public class CarControllerTest {
         when(this.carService.save(saveCarDto))
                 .thenReturn(carDtoSaved);
 
-        String bodyResult = new ObjectMapper()
+        var bodyResult = new ObjectMapper()
                 .setDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
                 .writeValueAsString(carDtoSaved);
 
@@ -140,6 +141,68 @@ public class CarControllerTest {
                 .contentType(JSON)
                 .body(is(equalTo(bodyResult)));
 
+    }
+
+    @Test
+    public void haveToReturnError400WhenSetInvalidFieldInBody_inSave() {
+        var saveCarDto = new SaveCarDto();
+        var now = Calendar.getInstance();
+
+        var errors = Set.of(
+                "Necessario informar o ano",
+                "Necessario informar o nome",
+                "Necessario informar o preco",
+                "Necessario informar a marca"
+        );
+
+        var errorDto = given().contentType(JSON)
+                .accept(JSON)
+                .body(saveCarDto)
+                .when()
+                .post("api/cars")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(BAD_REQUEST.value())
+                .contentType(JSON)
+                .extract()
+                .as(ErrorExceptionDto.class);
+
+        assertEquals(errors.size(), errorDto.getMessages().size());
+        assertTrue(errorDto.getMessages().containsAll(errors));
+        assertEquals("/api/cars", errorDto.getPath());
+        assertEquals(BAD_REQUEST.toString(), errorDto.getStatusCode());
+        assertTrue(now.before(errorDto.getTimestamp()));
+    }
+
+    @Test
+    public void haveToReturnError400WhenSetInvalidFieldsNumberInBody_inSave() {
+        var saveCarDto = new SaveCarDto(null, "Tests", "MyCompanyTest", 1800, new BigDecimal("0.0"), null, null);
+        var now = Calendar.getInstance();
+
+        var errors = Set.of(
+                "Necessario informar o ano maior que 1900",
+                "Necessario informar o preco maior que 0"
+        );
+
+        var errorDto = given().contentType(JSON)
+                .accept(JSON)
+                .body(saveCarDto)
+                .when()
+                .post("api/cars")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(BAD_REQUEST.value())
+                .contentType(JSON)
+                .extract()
+                .as(ErrorExceptionDto.class);
+
+        assertEquals(errors.size(), errorDto.getMessages().size());
+        assertTrue(errorDto.getMessages().containsAll(errors));
+        assertEquals("/api/cars", errorDto.getPath());
+        assertEquals(BAD_REQUEST.toString(), errorDto.getStatusCode());
+        assertTrue(now.before(errorDto.getTimestamp()));
     }
 
 }
