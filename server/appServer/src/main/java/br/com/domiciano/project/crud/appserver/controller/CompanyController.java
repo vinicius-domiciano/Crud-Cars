@@ -1,6 +1,6 @@
 package br.com.domiciano.project.crud.appserver.controller;
 
-import br.com.domiciano.project.crud.car.dto.BuscaMarcaCarroDto;
+import br.com.domiciano.project.crud.car.dto.FindCompanyDto;
 import br.com.domiciano.project.crud.car.dto.CadastroMarcaCarroDto;
 import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
 import br.com.domiciano.project.crud.car.service.CompanyCarService;
@@ -26,7 +26,7 @@ public class CompanyController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<BuscaMarcaCarroDto> findCompanyById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<FindCompanyDto> findCompanyById(@PathVariable(name = "id") Long id) {
         return new ResponseEntity<>(companyCarService.buscarPorId(id), HttpStatus.OK);
     }
 

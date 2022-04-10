@@ -1,6 +1,6 @@
 package br.com.domiciano.project.crud.car.service.impl;
 
-import br.com.domiciano.project.crud.car.dto.BuscaMarcaCarroDto;
+import br.com.domiciano.project.crud.car.dto.FindCompanyDto;
 import br.com.domiciano.project.crud.car.dto.CadastroMarcaCarroDto;
 import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
 import br.com.domiciano.project.crud.car.entity.Company;
@@ -31,11 +31,11 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     }
 
     @Override
-    public BuscaMarcaCarroDto buscarPorId(Long id) {
+    public FindCompanyDto buscarPorId(Long id) {
         return MAPPER.map(
                 this.repository.findById(id)
                     .orElseThrow(() -> new NotFoundException(String.format("Marca não encontrada para o id[%s]", id))),
-                BuscaMarcaCarroDto.class
+                FindCompanyDto.class
         );
     }
 
