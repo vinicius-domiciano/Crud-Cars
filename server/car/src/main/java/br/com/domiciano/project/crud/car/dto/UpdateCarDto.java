@@ -42,8 +42,8 @@ public class UpdateCarDto {
     @JsonIgnore
     private Calendar dataUpdated;
 
-    @JsonGetter("dataAtualizacao")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
+    @JsonGetter("dataUpdated")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public Calendar getDataUpdated() {
         return dataUpdated;
     }

@@ -45,13 +45,13 @@ public class SaveCarDto {
     private Calendar dateUpdated;
 
     @JsonGetter("dateCreated")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public Calendar getDateCreated() {
         return dateCreated;
     }
 
     @JsonGetter("dateUpdated")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public Calendar getDateUpdated() {
         return dateUpdated;
     }

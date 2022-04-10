@@ -17,7 +17,7 @@ public class ListCarDto {
     private Double price;
     private String company;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Calendar dateCreated;
 
 }
