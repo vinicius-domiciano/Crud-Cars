@@ -1,7 +1,7 @@
 package br.com.domiciano.project.crud.car.service.impl;
 
 import br.com.domiciano.project.crud.car.dto.FindCompanyDto;
-import br.com.domiciano.project.crud.car.dto.CadastroMarcaCarroDto;
+import br.com.domiciano.project.crud.car.dto.CreateCompanyDto;
 import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
 import br.com.domiciano.project.crud.car.entity.Company;
 import br.com.domiciano.project.crud.car.service.CompanyCarService;
@@ -40,10 +40,10 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     }
 
     @Override
-    public CadastroMarcaCarroDto cadastroMarcaCarro(CadastroMarcaCarroDto cadastroMarcaCarroDto) {
+    public CreateCompanyDto cadastroMarcaCarro(CreateCompanyDto createCompanyDto) {
         return MAPPER.map(
-                this.repository.save(MAPPER.map(cadastroMarcaCarroDto, Company.class)),
-                CadastroMarcaCarroDto.class
+                this.repository.save(MAPPER.map(createCompanyDto, Company.class)),
+                CreateCompanyDto.class
         );
     }
 

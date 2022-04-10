@@ -1,6 +1,6 @@
 package br.com.domiciano.project.crud.car.service;
 
-import br.com.domiciano.project.crud.car.dto.CadastroMarcaCarroDto;
+import br.com.domiciano.project.crud.car.dto.CreateCompanyDto;
 import br.com.domiciano.project.crud.car.dto.FindCompanyDto;
 import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
 
@@ -11,5 +11,5 @@ public interface CompanyCarService {
 
     FindCompanyDto buscarPorId(Long id);
 
-    CadastroMarcaCarroDto cadastroMarcaCarro(CadastroMarcaCarroDto cadastroMarcaCarroDto);
+    CreateCompanyDto cadastroMarcaCarro(CreateCompanyDto createCompanyDto);
 }

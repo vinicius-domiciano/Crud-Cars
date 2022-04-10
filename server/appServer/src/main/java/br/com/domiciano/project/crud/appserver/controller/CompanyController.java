@@ -1,7 +1,7 @@
 package br.com.domiciano.project.crud.appserver.controller;
 
 import br.com.domiciano.project.crud.car.dto.FindCompanyDto;
-import br.com.domiciano.project.crud.car.dto.CadastroMarcaCarroDto;
+import br.com.domiciano.project.crud.car.dto.CreateCompanyDto;
 import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
 import br.com.domiciano.project.crud.car.service.CompanyCarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +31,8 @@ public class CompanyController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<CadastroMarcaCarroDto> saveCompany(@RequestBody @Valid CadastroMarcaCarroDto cadastroMarcaCarroDto) {
-        return new ResponseEntity<>(companyCarService.cadastroMarcaCarro(cadastroMarcaCarroDto), HttpStatus.CREATED);
+    public ResponseEntity<CreateCompanyDto> saveCompany(@RequestBody @Valid CreateCompanyDto createCompanyDto) {
+        return new ResponseEntity<>(companyCarService.cadastroMarcaCarro(createCompanyDto), HttpStatus.CREATED);
     }
 
 
