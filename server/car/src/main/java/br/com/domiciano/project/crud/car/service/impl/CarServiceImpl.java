@@ -4,7 +4,7 @@ import br.com.domiciano.project.crud.car.service.CarService;
 import br.com.domiciano.project.crud.base.exceptions.NotFoundException;
 import br.com.domiciano.project.crud.car.dto.UpdateCarDto;
 import br.com.domiciano.project.crud.car.dto.FindCarDto;
-import br.com.domiciano.project.crud.car.dto.SaveCarDto;
+import br.com.domiciano.project.crud.car.dto.CreateCarDto;
 import br.com.domiciano.project.crud.car.dto.ListCarDto;
 import br.com.domiciano.project.crud.car.entity.Car;
 import br.com.domiciano.project.crud.car.repository.CarRepository;
@@ -44,10 +44,10 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional(rollbackFor = { Exception.class })
-    public SaveCarDto save(SaveCarDto carroDto) {
+    public CreateCarDto save(CreateCarDto carroDto) {
         return MAPPER.map(
                 this.repository.save(MAPPER.map(carroDto, Car.class)),
-                SaveCarDto.class
+                CreateCarDto.class
         );
     }
 

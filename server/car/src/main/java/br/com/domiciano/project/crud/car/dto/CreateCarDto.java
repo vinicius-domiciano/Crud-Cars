@@ -17,7 +17,7 @@ import java.util.Calendar;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaveCarDto {
+public class CreateCarDto {
 
     @JsonIgnore
     private Long id;
