@@ -7,7 +7,7 @@ import br.com.domiciano.project.crud.base.exceptions.NotFoundException;
 import br.com.domiciano.project.crud.base.exceptions.handle.ExceptionHandle;
 import br.com.domiciano.project.crud.car.dto.FindCarDto;
 import br.com.domiciano.project.crud.car.dto.ListCarDto;
-import br.com.domiciano.project.crud.car.dto.SaveCarDto;
+import br.com.domiciano.project.crud.car.dto.CreateCarDto;
 import br.com.domiciano.project.crud.car.dto.UpdateCarDto;
 import br.com.domiciano.project.crud.car.service.CarService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,8 +54,8 @@ class CarControllerTest {
 
     @Test
     void haveToReturnSuccess_inListCars() throws JsonProcessingException {
-        ListCarDto listCarDto1 = new ListCarDto(1L, "CarName1", 78000.00, "MyTestCompany", Calendar.getInstance());
-        ListCarDto listCarDto2 = new ListCarDto(2L, "CarName2", 88000.00, "MyTestCompany", Calendar.getInstance());
+        ListCarDto listCarDto1 = new ListCarDto(1L, "CarName1", new BigDecimal("78000.00"), "MyTestCompany", Calendar.getInstance());
+        ListCarDto listCarDto2 = new ListCarDto(2L, "CarName2", new BigDecimal("88000.00"), "MyTestCompany", Calendar.getInstance());
         when(this.carService.listCars())
                 .thenReturn(List.of(listCarDto1, listCarDto2));
 
@@ -122,8 +122,8 @@ class CarControllerTest {
 
     @Test
     void haveToReturnSuccess_inSave() throws JsonProcessingException {
-        var saveCarDto = new SaveCarDto(null, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"), null, null);
-        var carDtoSaved = new SaveCarDto(1L, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"), Calendar.getInstance(), Calendar.getInstance());
+        var saveCarDto = new CreateCarDto(null, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"), null, null);
+        var carDtoSaved = new CreateCarDto(1L, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"), Calendar.getInstance(), Calendar.getInstance());
 
         when(this.carService.save(saveCarDto))
                 .thenReturn(carDtoSaved);
@@ -148,7 +148,7 @@ class CarControllerTest {
 
     @Test
     void haveToReturnError400WhenSetInvalidFieldInBody_inSave() {
-        var saveCarDto = new SaveCarDto();
+        var saveCarDto = new CreateCarDto();
         var now = Calendar.getInstance();
 
         var errors = Set.of(
@@ -180,7 +180,7 @@ class CarControllerTest {
 
     @Test
     void haveToReturnError400WhenSetInvalidFieldsNumberInBody_inSave() {
-        var saveCarDto = new SaveCarDto(null, "Tests", "MyCompanyTest", 1800, new BigDecimal("0.0"), null, null);
+        var saveCarDto = new CreateCarDto(null, "Tests", "MyCompanyTest", 1800, new BigDecimal("0.0"), null, null);
         var now = Calendar.getInstance();
 
         var errors = Set.of(
