@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public class BaseRestException extends RuntimeException {
 
-    private String mensagem;
+    private String message;
     private HttpStatus httpStatus;
 
 }
