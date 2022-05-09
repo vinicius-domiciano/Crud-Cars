@@ -98,7 +98,7 @@ class CarServiceImplTest {
         assertEquals(response.getName(), carDto.getName());
         assertEquals(response.getCompany(), carDto.getCompany());
         assertEquals(response.getYear(), carDto.getYear());
-        assertTrue(response.getPrice().equals(carDto.getPrice()));
+        assertEquals(response.getPrice(), carDto.getPrice());
         assertEquals(response.getDateCreated(), carDto.getDateCreated());
         assertEquals(response.getDateUpdated(), carDto.getDateUpdated());
     }
@@ -120,8 +120,8 @@ class CarServiceImplTest {
             statusCode = e.getHttpStatus().value();
         }
 
-        assertEquals(statusCode, 404);
-        assertEquals(message, "Car not found for id[1]");
+        assertEquals(404, statusCode);
+        assertEquals("Car not found for id[1]", message);
         assertTrue(isError);
     }
 
@@ -144,7 +144,7 @@ class CarServiceImplTest {
         assertEquals(response.getName(), result.getName());
         assertEquals(response.getCompany(), result.getCompany());
         assertEquals(response.getYear(), result.getYear());
-        assertTrue(response.getPrice().equals(result.getPrice()));
+        assertEquals(response.getPrice(), result.getPrice());
         assertEquals(response.getDateCreated(), result.getDateCreated());
         assertEquals(response.getDateUpdated(), result.getDateUpdated());
     }
@@ -169,7 +169,7 @@ class CarServiceImplTest {
         assertNotEquals(response.getName(), car.getName());
         assertEquals(response.getCompany(), request.getCompany());
         assertEquals(response.getYear(), request.getYear());
-        assertTrue(response.getPrice().equals(request.getPrice()));
+        assertEquals(response.getPrice(), request.getPrice());
         assertNotEquals(response.getDateUpdated(), car.getDateUpdated());
     }
 
@@ -191,8 +191,8 @@ class CarServiceImplTest {
             statusCode = e.getHttpStatus().value();
         }
 
-        assertEquals(statusCode, 404);
-        assertEquals(message, "Car not found for id[1]");
+        assertEquals(404, statusCode);
+        assertEquals("Car not found for id[1]", message);
         assertTrue(isError);
     }
 
@@ -223,8 +223,8 @@ class CarServiceImplTest {
             statusCode = e.getHttpStatus().value();
         }
 
-        assertEquals(statusCode, 404);
-        assertEquals(message, "Car not found for id[2]");
+        assertEquals(404, statusCode);
+        assertEquals("Car not found for id[2]", message);
         assertTrue(isError);
     }
 
