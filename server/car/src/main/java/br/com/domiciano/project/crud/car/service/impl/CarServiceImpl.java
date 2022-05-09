@@ -52,6 +52,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Transactional(rollbackFor = { Exception.class })
     public UpdateCarDto update(UpdateCarDto carroDto) {
         this.findCarById(carroDto.getId());
 
