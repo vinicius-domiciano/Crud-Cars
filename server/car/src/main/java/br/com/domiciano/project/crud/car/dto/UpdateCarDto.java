@@ -40,11 +40,11 @@ public class UpdateCarDto {
     private BigDecimal price;
 
     @JsonIgnore
-    private Calendar dataUpdated;
+    private Calendar dateUpdated;
 
-    @JsonGetter("dataUpdated")
+    @JsonGetter("dateUpdated")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    public Calendar getDataUpdated() {
-        return dataUpdated;
+    public Calendar getDateUpdated() {
+        return dateUpdated;
     }
 }

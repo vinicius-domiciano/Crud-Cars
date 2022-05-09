@@ -1,6 +1,5 @@
 package br.com.domiciano.project.crud.car.service;
 
-import br.com.domiciano.project.crud.base.exceptions.BaseRestException;
 import br.com.domiciano.project.crud.base.exceptions.NotFoundException;
 import br.com.domiciano.project.crud.car.annotation.CustomInitTest;
 import br.com.domiciano.project.crud.car.dto.CreateCarDto;
@@ -171,7 +170,7 @@ class CarServiceImplTest {
         assertEquals(response.getCompany(), request.getCompany());
         assertEquals(response.getYear(), request.getYear());
         assertTrue(response.getPrice().equals(request.getPrice()));
-        assertNotEquals(response.getDataUpdated(), car.getDateUpdated());
+        assertNotEquals(response.getDateUpdated(), car.getDateUpdated());
     }
 
     @Test
