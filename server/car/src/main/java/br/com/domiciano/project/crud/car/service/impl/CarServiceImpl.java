@@ -19,10 +19,14 @@ import java.util.List;
 @Service
 public class CarServiceImpl implements CarService {
 
-    @Autowired
-    private CarRepository repository;
+    private final CarRepository repository;
 
     private static final ModelMapper MAPPER = new ModelMapper();
+
+    @Autowired
+    public CarServiceImpl(CarRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public List<ListCarDto> listCars() {

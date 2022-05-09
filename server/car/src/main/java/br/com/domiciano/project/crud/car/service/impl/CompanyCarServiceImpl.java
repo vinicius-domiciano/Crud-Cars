@@ -17,10 +17,14 @@ import java.util.List;
 @Service
 public class CompanyCarServiceImpl implements CompanyCarService {
 
-    @Autowired
-    private MarcaCarroRepository repository;
+    private final MarcaCarroRepository repository;
 
     private static final ModelMapper MAPPER = new ModelMapper();
+
+    @Autowired
+    public CompanyCarServiceImpl(MarcaCarroRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public List<ListCompanyDto> listarMarcaCarro() {
