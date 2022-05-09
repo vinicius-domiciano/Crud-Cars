@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
+import static br.com.domiciano.project.crud.base.helpers.ExceptionsIndices.COMPANY_NOT_FOUND_ID_FORMAT;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.standaloneSetup;
@@ -61,7 +62,7 @@ class CompanyControllerTest {
                 new ListCompanyDto(2L, "MyCompany2")
         );
 
-        when(this.companyCarService.listarMarcaCarro())
+        when(this.companyCarService.listAll())
                 .thenReturn(companies);
 
         String bodyResult = new ObjectMapper()
@@ -82,7 +83,7 @@ class CompanyControllerTest {
     void haveToReturnSuccess_inFindCompanyById() throws JsonProcessingException {
         var company = new FindCompanyDto(1L, Calendar.getInstance(), Calendar.getInstance(), "companyDescription", "FindCompany");
 
-        when(this.companyCarService.buscarPorId(1L))
+        when(this.companyCarService.findById(1L))
                 .thenReturn(company);
 
         String bodyResult = new ObjectMapper()
@@ -101,12 +102,12 @@ class CompanyControllerTest {
     }
 
     @Test
-    void haveToReturnError404WhenSeiInvalidId_inFindCompanyById() {
+    void haveToReturnError404WhenSetInvalidId_inFindCompanyById() {
         var now = Calendar.getInstance();
 
-        doThrow(new NotFoundException("Marca não encontrada para o id[1]"))
+        doThrow(new NotFoundException(COMPANY_NOT_FOUND_ID_FORMAT, 1L))
                 .when(this.companyCarService)
-                .buscarPorId(1L);
+                .findById(1L);
 
         var errorDto = given().accept(JSON)
                 .when()
@@ -120,7 +121,7 @@ class CompanyControllerTest {
                 .as(ErrorExceptionDto.class);
 
         assertEquals(1, errorDto.getMessages().size());
-        assertTrue(errorDto.getMessages().contains("Marca não encontrada para o id[1]"));
+        assertTrue(errorDto.getMessages().contains(String.format(COMPANY_NOT_FOUND_ID_FORMAT, 1L)));
         assertEquals("/api/companies/1", errorDto.getPath());
         assertEquals(NOT_FOUND.toString(), errorDto.getStatusCode());
         assertTrue(now.before(errorDto.getTimestamp()));
@@ -131,7 +132,7 @@ class CompanyControllerTest {
         var requestBody = new CreateCompanyDto(null, "Description", "myCompany", null, null);
         var responseBody = new CreateCompanyDto(1L, "Description", "myCompany", Calendar.getInstance(), Calendar.getInstance());
 
-        when(this.companyCarService.cadastroMarcaCarro(requestBody))
+        when(this.companyCarService.create(requestBody))
                 .thenReturn(responseBody);
 
         String bodyResult = new ObjectMapper()

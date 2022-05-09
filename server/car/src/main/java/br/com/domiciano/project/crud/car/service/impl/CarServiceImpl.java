@@ -1,5 +1,6 @@
 package br.com.domiciano.project.crud.car.service.impl;
 
+import br.com.domiciano.project.crud.base.helpers.ExceptionsIndices;
 import br.com.domiciano.project.crud.car.service.CarService;
 import br.com.domiciano.project.crud.base.exceptions.NotFoundException;
 import br.com.domiciano.project.crud.car.dto.UpdateCarDto;
@@ -41,7 +42,7 @@ public class CarServiceImpl implements CarService {
         return MAPPER.map(
                 this.repository
                         .findById(id)
-                        .orElseThrow(() -> new NotFoundException(String.format("Car not found for id[%s]", id))),
+                        .orElseThrow(() -> new NotFoundException(ExceptionsIndices.CAR_NOT_FOUND_ID_FORMAT, id)),
                 FindCarDto.class
         );
     }

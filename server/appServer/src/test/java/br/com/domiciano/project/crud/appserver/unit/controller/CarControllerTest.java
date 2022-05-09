@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
+import static br.com.domiciano.project.crud.base.helpers.ExceptionsIndices.CAR_NOT_FOUND_ID_FORMAT;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;
 import static org.hamcrest.Matchers.*;
@@ -99,7 +100,7 @@ class CarControllerTest {
     void haveToReturnError404WhenSetInvalidId_inFindCardById() {
         var now = Calendar.getInstance();
 
-        doThrow(new NotFoundException(String.format("Car not found for id[%s]", 1L)))
+        doThrow(new NotFoundException(CAR_NOT_FOUND_ID_FORMAT, 1L))
                 .when(this.carService)
                 .findCarById(1L);
 
@@ -114,7 +115,7 @@ class CarControllerTest {
                 .as(ErrorExceptionDto.class);
 
         assertEquals(1, errorDto.getMessages().size());
-        assertTrue(errorDto.getMessages().contains("Car not found for id[1]"));
+        assertTrue(errorDto.getMessages().contains(String.format(CAR_NOT_FOUND_ID_FORMAT, 1L)));
         assertEquals("/api/cars/1", errorDto.getPath());
         assertEquals(NOT_FOUND.toString(), errorDto.getStatusCode());
         assertTrue(now.before(errorDto.getTimestamp()));
@@ -272,7 +273,7 @@ class CarControllerTest {
         var updateCarDto = new UpdateCarDto(1L, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"),  null);
         var now = Calendar.getInstance();
 
-        doThrow(new NotFoundException(String.format("Car not found for id[%s]", 1L)))
+        doThrow(new NotFoundException(CAR_NOT_FOUND_ID_FORMAT, 1L))
                 .when(this.carService)
                 .update(updateCarDto);
 
@@ -290,7 +291,7 @@ class CarControllerTest {
                 .as(ErrorExceptionDto.class);
 
         assertEquals(1, errorDto.getMessages().size());
-        assertTrue(errorDto.getMessages().contains("Car not found for id[1]"));
+        assertTrue(errorDto.getMessages().contains(String.format(CAR_NOT_FOUND_ID_FORMAT, 1L)));
         assertEquals("/api/cars", errorDto.getPath());
         assertEquals(NOT_FOUND.toString(), errorDto.getStatusCode());
         assertTrue(now.before(errorDto.getTimestamp()));
@@ -344,7 +345,7 @@ class CarControllerTest {
     void haveToReturnError404WhenSendInvalidId_inDelete() {
         var now = Calendar.getInstance();
 
-        doThrow(new NotFoundException(String.format("Car not found for id[%s]", 1L)))
+        doThrow(new NotFoundException(CAR_NOT_FOUND_ID_FORMAT, 1L))
                 .when(this.carService)
                 .delete(1L);
 
@@ -360,7 +361,7 @@ class CarControllerTest {
                 .as(ErrorExceptionDto.class);
 
         assertEquals(1, errorDto.getMessages().size());
-        assertTrue(errorDto.getMessages().contains("Car not found for id[1]"));
+        assertTrue(errorDto.getMessages().contains(String.format(CAR_NOT_FOUND_ID_FORMAT, 1L)));
         assertEquals("/api/cars/1", errorDto.getPath());
         assertEquals(NOT_FOUND.toString(), errorDto.getStatusCode());
         assertTrue(now.before(errorDto.getTimestamp()));

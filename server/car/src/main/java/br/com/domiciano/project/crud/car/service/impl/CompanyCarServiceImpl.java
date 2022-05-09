@@ -1,5 +1,6 @@
 package br.com.domiciano.project.crud.car.service.impl;
 
+import br.com.domiciano.project.crud.base.helpers.ExceptionsIndices;
 import br.com.domiciano.project.crud.car.dto.FindCompanyDto;
 import br.com.domiciano.project.crud.car.dto.CreateCompanyDto;
 import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
@@ -27,7 +28,7 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     }
 
     @Override
-    public List<ListCompanyDto> listarMarcaCarro() {
+    public List<ListCompanyDto> listAll() {
         return MAPPER.map(
                 this.repository.findAll(),
                 new TypeToken<List<ListCompanyDto>>() {}.getType()
@@ -35,16 +36,16 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     }
 
     @Override
-    public FindCompanyDto buscarPorId(Long id) {
+    public FindCompanyDto findById(Long id) {
         return MAPPER.map(
                 this.repository.findById(id)
-                    .orElseThrow(() -> new NotFoundException(String.format("Marca não encontrada para o id[%s]", id))),
+                    .orElseThrow(() -> new NotFoundException(ExceptionsIndices.COMPANY_NOT_FOUND_ID_FORMAT, id)),
                 FindCompanyDto.class
         );
     }
 
     @Override
-    public CreateCompanyDto cadastroMarcaCarro(CreateCompanyDto createCompanyDto) {
+    public CreateCompanyDto create(CreateCompanyDto createCompanyDto) {
         return MAPPER.map(
                 this.repository.save(MAPPER.map(createCompanyDto, Company.class)),
                 CreateCompanyDto.class

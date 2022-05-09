@@ -22,17 +22,17 @@ public class CompanyController {
 
     @GetMapping
     public ResponseEntity<List<ListCompanyDto>> listAllCompany() {
-        return new ResponseEntity<>(companyCarService.listarMarcaCarro(), HttpStatus.OK);
+        return new ResponseEntity<>(companyCarService.listAll(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<FindCompanyDto> findCompanyById(@PathVariable(name = "id") Long id) {
-        return new ResponseEntity<>(companyCarService.buscarPorId(id), HttpStatus.OK);
+        return new ResponseEntity<>(companyCarService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping(value = "")
     public ResponseEntity<CreateCompanyDto> saveCompany(@RequestBody @Valid CreateCompanyDto createCompanyDto) {
-        return new ResponseEntity<>(companyCarService.cadastroMarcaCarro(createCompanyDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(companyCarService.create(createCompanyDto), HttpStatus.CREATED);
     }
 
 

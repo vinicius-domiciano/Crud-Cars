@@ -7,9 +7,9 @@ import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
 import java.util.List;
 
 public interface CompanyCarService {
-    List<ListCompanyDto> listarMarcaCarro();
+    List<ListCompanyDto> listAll();
 
-    FindCompanyDto buscarPorId(Long id);
+    FindCompanyDto findById(Long id);
 
-    CreateCompanyDto cadastroMarcaCarro(CreateCompanyDto createCompanyDto);
+    CreateCompanyDto create(CreateCompanyDto createCompanyDto);
 }

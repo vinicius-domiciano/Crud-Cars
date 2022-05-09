@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
+import static br.com.domiciano.project.crud.base.helpers.ExceptionsIndices.CAR_NOT_FOUND_ID_FORMAT;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.standaloneSetup;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
@@ -121,7 +122,7 @@ class CarServiceImplTest {
         }
 
         assertEquals(404, statusCode);
-        assertEquals("Car not found for id[1]", message);
+        assertEquals(String.format(CAR_NOT_FOUND_ID_FORMAT, 1L), message);
         assertTrue(isError);
     }
 
@@ -192,7 +193,7 @@ class CarServiceImplTest {
         }
 
         assertEquals(404, statusCode);
-        assertEquals("Car not found for id[1]", message);
+        assertEquals(String.format(CAR_NOT_FOUND_ID_FORMAT, 1L), message);
         assertTrue(isError);
     }
 
@@ -224,7 +225,7 @@ class CarServiceImplTest {
         }
 
         assertEquals(404, statusCode);
-        assertEquals("Car not found for id[2]", message);
+        assertEquals(String.format(CAR_NOT_FOUND_ID_FORMAT, 2L), message);
         assertTrue(isError);
     }
 
