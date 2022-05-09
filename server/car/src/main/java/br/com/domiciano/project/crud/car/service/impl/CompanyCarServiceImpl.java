@@ -7,7 +7,7 @@ import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
 import br.com.domiciano.project.crud.car.entity.Company;
 import br.com.domiciano.project.crud.car.service.CompanyCarService;
 import br.com.domiciano.project.crud.base.exceptions.NotFoundException;
-import br.com.domiciano.project.crud.car.repository.MarcaCarroRepository;
+import br.com.domiciano.project.crud.car.repository.CompanyRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +18,12 @@ import java.util.List;
 @Service
 public class CompanyCarServiceImpl implements CompanyCarService {
 
-    private final MarcaCarroRepository repository;
+    private final CompanyRepository repository;
 
     private static final ModelMapper MAPPER = new ModelMapper();
 
     @Autowired
-    public CompanyCarServiceImpl(MarcaCarroRepository repository) {
+    public CompanyCarServiceImpl(CompanyRepository repository) {
         this.repository = repository;
     }
 
