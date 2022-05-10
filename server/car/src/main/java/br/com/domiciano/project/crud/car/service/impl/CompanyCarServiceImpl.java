@@ -4,6 +4,7 @@ import br.com.domiciano.project.crud.base.helpers.ExceptionsIndices;
 import br.com.domiciano.project.crud.car.dto.FindCompanyDto;
 import br.com.domiciano.project.crud.car.dto.CreateCompanyDto;
 import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
+import br.com.domiciano.project.crud.car.dto.UpdateCompanyDto;
 import br.com.domiciano.project.crud.car.entity.Company;
 import br.com.domiciano.project.crud.car.service.CompanyCarService;
 import br.com.domiciano.project.crud.base.exceptions.NotFoundException;
@@ -49,6 +50,16 @@ public class CompanyCarServiceImpl implements CompanyCarService {
         return MAPPER.map(
                 this.repository.save(MAPPER.map(createCompanyDto, Company.class)),
                 CreateCompanyDto.class
+        );
+    }
+
+    @Override
+    public UpdateCompanyDto update(UpdateCompanyDto updateCompanyDto) {
+        this.findById(updateCompanyDto.getId());
+
+        return MAPPER.map(
+                this.repository.save(MAPPER.map(updateCompanyDto, Company.class)),
+                UpdateCompanyDto.class
         );
     }
 
