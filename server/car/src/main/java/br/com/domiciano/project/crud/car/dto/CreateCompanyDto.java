@@ -26,21 +26,21 @@ public class CreateCompanyDto {
     private String name;
 
     @JsonIgnore
-    private Calendar createdAt;
+    private Calendar dateCreated;
 
     @JsonIgnore
-    private Calendar updatedAt;
+    private Calendar dateUpdated;
 
-    @JsonGetter("createdAt")
+    @JsonGetter("dateCreated")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    public Calendar getCreatedAt() {
-        return createdAt;
+    public Calendar getDateCreated() {
+        return dateCreated;
     }
 
-    @JsonGetter("updatedAt")
+    @JsonGetter("dateUpdated")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    public Calendar getUpdatedAt() {
-        return updatedAt;
+    public Calendar getDateUpdated() {
+        return dateUpdated;
     }
 
     @JsonGetter("id")

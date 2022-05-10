@@ -15,10 +15,10 @@ public class FindCompanyDto {
     private Long id;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Calendar createdAt;
+    private Calendar dateCreated;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Calendar updatedAt;
+    private Calendar dateUpdated;
 
     private String description;
     private String name;
