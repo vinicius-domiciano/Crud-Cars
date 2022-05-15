@@ -163,26 +163,23 @@ class CompanyServiceImplTest {
 
         company = new Company(1L, null, null, "CompanyName", "HelloWorld");
         var companyUpdated = new Company(1L, now, now, "CompanyName", "HelloWorld");
-        var request = new UpdateCompanyDto(1L, "CompanyName", "HelloWorld", null);
+        var request =
+                new UpdateCompanyDto(1L, "CompanyName", "HelloWorld");
 
         when(this.companyRepository.save(company))
                 .thenReturn(companyUpdated);
 
-        var companyDto = new UpdateCompanyDto(1L, "CompanyName", "HelloWorld", now);
+        var companyDto = new UpdateCompanyDto(1L, "CompanyName", "HelloWorld");
         var response = this.companyCarService.update(request);
 
         assertNotNull(response);
         assertNotNull(response.getId());
         assertNotNull(response.getName());
         assertNotNull(response.getDescription());
-        assertNotNull(response.getDateUpdated());
 
         assertEquals(companyDto.getId(), response.getId());
         assertEquals(companyDto.getName(), response.getName());
         assertEquals(companyDto.getDescription(), response.getDescription());
-        assertEquals(companyDto.getDateUpdated(), response.getDateUpdated());
-
-        assertEquals(0, companyDto.getDateUpdated().compareTo(response.getDateUpdated()));
     }
 
     @Test
@@ -192,7 +189,7 @@ class CompanyServiceImplTest {
         var statusCode = 0;
 
         try {
-            var companyDto = new UpdateCompanyDto(2L, "MyCompany", "HelloWorld", null);
+            var companyDto = new UpdateCompanyDto(2L, "MyCompany", "HelloWorld");
             this.companyCarService.update(companyDto);
         } catch(NotFoundException e) {
             isError = Boolean.TRUE;
