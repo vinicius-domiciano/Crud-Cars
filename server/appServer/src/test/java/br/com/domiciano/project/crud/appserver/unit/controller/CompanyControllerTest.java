@@ -8,6 +8,7 @@ import br.com.domiciano.project.crud.base.exceptions.handle.ExceptionHandle;
 import br.com.domiciano.project.crud.car.dto.CreateCompanyDto;
 import br.com.domiciano.project.crud.car.dto.FindCompanyDto;
 import br.com.domiciano.project.crud.car.dto.ListCompanyDto;
+import br.com.domiciano.project.crud.car.dto.UpdateCompanyDto;
 import br.com.domiciano.project.crud.car.service.CompanyCarService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
+import static br.com.domiciano.project.crud.base.helpers.ExceptionsIndices.CAR_NOT_FOUND_ID_FORMAT;
 import static br.com.domiciano.project.crud.base.helpers.ExceptionsIndices.COMPANY_NOT_FOUND_ID_FORMAT;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
@@ -178,6 +180,114 @@ class CompanyControllerTest {
         assertTrue(errorDto.getMessages().containsAll(errorMessages));
         assertEquals("/api/companies", errorDto.getPath());
         assertEquals(BAD_REQUEST.toString(), errorDto.getStatusCode());
+        assertTrue(now.before(errorDto.getTimestamp()));
+    }
+
+    @Test
+    void haveToReturnSuccess_inUpdate() throws JsonProcessingException {
+        var updateCompanyRequest = new UpdateCompanyDto(1L, "MyUpdateCompany", "Update company");
+
+        when(this.companyCarService.update(updateCompanyRequest))
+                .thenReturn(updateCompanyRequest);
+
+        var response = new ObjectMapper()
+            .writeValueAsString(updateCompanyRequest);
+
+        given().contentType(JSON)
+                .accept(JSON)
+                .body(updateCompanyRequest)
+                .put("api/companies")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(OK.value())
+                .contentType(JSON)
+                .body(is(equalTo(response)));
+    }
+
+    @Test
+    void haveToReturnError400WhenSetInvalidFieldInBody_inUpdate() {
+        var updateCompanyRequest = new UpdateCompanyDto();
+        var now = Calendar.getInstance();
+
+        var errors = Set.of(
+                "Necessario informar o id",
+                "Necessario informar o nome",
+                "Necessario informar a descrição"
+        );
+
+        var errorDto =  given().contentType(JSON)
+                .accept(JSON)
+                .body(updateCompanyRequest)
+                .when()
+                .put("api/companies")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(BAD_REQUEST.value())
+                .contentType(JSON)
+                .extract()
+                .as(ErrorExceptionDto.class);
+
+        assertEquals(errors.size(), errorDto.getMessages().size());
+        assertTrue(errorDto.getMessages().containsAll(errors));
+        assertEquals("/api/companies", errorDto.getPath());
+        assertEquals(BAD_REQUEST.toString(), errorDto.getStatusCode());
+        assertTrue(now.before(errorDto.getTimestamp()));
+    }
+
+    @Test
+    void haveToReturn400WhenSetInvalidId_inUpdate() {
+        var updateCompanyRequest = new UpdateCompanyDto(0L, "MyCompany", "description");
+
+        var errors = Set.of("Id deve ser maior que 0");
+        var now = Calendar.getInstance();
+        var errorDto =  given().contentType(JSON)
+                .accept(JSON)
+                .body(updateCompanyRequest)
+                .when()
+                .put("api/companies")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(BAD_REQUEST.value())
+                .contentType(JSON)
+                .extract()
+                .as(ErrorExceptionDto.class);
+
+        assertEquals(errors.size(), errorDto.getMessages().size());
+        assertTrue(errorDto.getMessages().containsAll(errors));
+        assertEquals("/api/companies", errorDto.getPath());
+        assertEquals(BAD_REQUEST.toString(), errorDto.getStatusCode());
+        assertTrue(now.before(errorDto.getTimestamp()));
+    }
+
+    @Test
+    void haveToReturn404WhenUpdateInvalidId_inUpdate() {
+        var updateCompanyRequest = new UpdateCompanyDto(1L, "MyUpdateCompany", "Update company");
+        var now = Calendar.getInstance();
+
+        doThrow(new NotFoundException(COMPANY_NOT_FOUND_ID_FORMAT, 1L))
+                .when(this.companyCarService)
+                .update(updateCompanyRequest);
+
+        var errorDto = given().contentType(JSON)
+                .accept(JSON)
+                .body(updateCompanyRequest)
+                .when()
+                .put("api/companies")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(NOT_FOUND.value())
+                .contentType(JSON)
+                .extract()
+                .as(ErrorExceptionDto.class);
+
+        assertEquals(1, errorDto.getMessages().size());
+        assertTrue(errorDto.getMessages().contains(String.format(COMPANY_NOT_FOUND_ID_FORMAT, 1L)));
+        assertEquals("/api/companies", errorDto.getPath());
+        assertEquals(NOT_FOUND.toString(), errorDto.getStatusCode());
         assertTrue(now.before(errorDto.getTimestamp()));
     }
 }
