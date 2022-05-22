@@ -7,7 +7,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
-@Table(name = "car")
+@Table(name = "car", indexes = {
+        @Index(name = "fk_index", columnList = "company_id"),
+        @Index(name = "index_01", columnList = "name,year")
+})
 @Entity
 @Builder
 @Data
@@ -25,15 +28,14 @@ public class Car extends Base implements Serializable {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "company", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
 
-    public Car(Long id, Calendar dateCreated, Calendar dateUpdated, String name, Integer year, BigDecimal price, String company) {
+    public Car(Long id, Calendar dateCreated, Calendar dateUpdated, String name, Integer year, BigDecimal price, Company company) {
         super(id, dateCreated, dateUpdated);
         this.name = name;
         this.year = year;
         this.price = price;
-        this.company = new Company(company);
+        this.company = company;
     }
 }

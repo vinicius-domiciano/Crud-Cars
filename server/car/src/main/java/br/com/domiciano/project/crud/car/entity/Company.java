@@ -1,11 +1,13 @@
 package br.com.domiciano.project.crud.car.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -22,8 +24,9 @@ public class Company extends Base implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "company")
-    private List<Car> cars;
+    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Car> cars;
 
     public Company(Long id, Calendar dateCreated, Calendar dateUpdated, String name, String description) {
         super(id, dateCreated, dateUpdated);
@@ -31,7 +34,8 @@ public class Company extends Base implements Serializable {
         this.description = description;
     }
 
-    public Company(String name) {
+    public Company(long id, String name) {
+        this.setId(id);
         this.name = name;
     }
 }
