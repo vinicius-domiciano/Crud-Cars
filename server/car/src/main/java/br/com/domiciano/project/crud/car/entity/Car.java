@@ -25,14 +25,15 @@ public class Car extends Base implements Serializable {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @Column(name = "company", nullable = false)
-    private String company;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "company", referencedColumnName = "id")
+    private Company company;
 
     public Car(Long id, Calendar dateCreated, Calendar dateUpdated, String name, Integer year, BigDecimal price, String company) {
         super(id, dateCreated, dateUpdated);
         this.name = name;
         this.year = year;
         this.price = price;
-        this.company = company;
+        this.company = new Company(company);
     }
 }
