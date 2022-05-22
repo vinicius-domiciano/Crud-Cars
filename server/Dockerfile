@@ -1,11 +1,18 @@
 FROM openjdk:11
 
-ARG JAR_FILE=target/*.jar
+ARG PROFILE
+ARG ADDITIONAL_OPTS
+ARG JAR_FILE=appServer/target/*.jar
+
+ENV PROFILE=${PROFILE}
+ENV ADDITIONAL_OPTS=${ADDITIONAL_OPTS}
+
 COPY ${JAR_FILE} app.jar
 
 EXPOSE 8080
 EXPOSE 5005
+EXPOSE 5555
 
-CMD ["./mvnw", "spring-boot:run"]
+SHELL ["/bin/sh", "-c"]
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+CMD java ${ADDITIONAL_OPTS} -jar app.jar --spring.profiles.active=${PROFILE}
