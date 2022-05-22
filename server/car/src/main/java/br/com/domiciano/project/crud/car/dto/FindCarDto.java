@@ -23,7 +23,7 @@ public class FindCarDto {
 
     private BigDecimal price;
     private String name;
-    private String company;
+    private CompanyCarDto company;
     private Integer year;
 
 }

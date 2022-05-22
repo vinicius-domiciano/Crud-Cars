@@ -16,7 +16,7 @@ public class ListCarDto {
     private Long id;
     private String name;
     private BigDecimal price;
-    private String company;
+    private CompanyCarDto company;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Calendar dateCreated;

@@ -26,9 +26,8 @@ public class CreateCarDto {
     @NotNull(message = "Necessario informar o nome")
     private String name;
 
-    @NotEmpty(message = "Necessario informar a marca")
     @NotNull(message = "Necessario informar a marca")
-    private String company;
+    private CompanyCarDto company;
 
     @Min(value = 1900, message = "Necessario informar o ano maior que 1900")
     @NotNull(message = "Necessario informar o ano")
