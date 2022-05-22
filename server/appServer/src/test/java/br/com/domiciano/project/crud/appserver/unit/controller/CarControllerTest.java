@@ -3,12 +3,10 @@ package br.com.domiciano.project.crud.appserver.unit.controller;
 import br.com.domiciano.project.crud.appserver.controller.CarController;
 import br.com.domiciano.project.crud.appserver.unit.annotation.CustomInitTest;
 import br.com.domiciano.project.crud.base.dto.ErrorExceptionDto;
+import br.com.domiciano.project.crud.base.exceptions.BadRequestException;
 import br.com.domiciano.project.crud.base.exceptions.NotFoundException;
 import br.com.domiciano.project.crud.base.exceptions.handle.ExceptionHandle;
-import br.com.domiciano.project.crud.car.dto.FindCarDto;
-import br.com.domiciano.project.crud.car.dto.ListCarDto;
-import br.com.domiciano.project.crud.car.dto.CreateCarDto;
-import br.com.domiciano.project.crud.car.dto.UpdateCarDto;
+import br.com.domiciano.project.crud.car.dto.*;
 import br.com.domiciano.project.crud.car.service.CarService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import static br.com.domiciano.project.crud.base.helpers.ExceptionsIndices.CAR_NOT_FOUND_ID_FORMAT;
+import static br.com.domiciano.project.crud.base.helpers.ExceptionsIndices.COMPANY_NOT_FOUND_ID_FORMAT;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;
 import static org.hamcrest.Matchers.*;
@@ -55,8 +54,8 @@ class CarControllerTest {
 
     @Test
     void haveToReturnSuccess_inListCars() throws JsonProcessingException {
-        ListCarDto listCarDto1 = new ListCarDto(1L, "CarName1", new BigDecimal("78000.00"), "MyTestCompany", Calendar.getInstance());
-        ListCarDto listCarDto2 = new ListCarDto(2L, "CarName2", new BigDecimal("88000.00"), "MyTestCompany", Calendar.getInstance());
+        ListCarDto listCarDto1 = new ListCarDto(1L, "CarName1", new BigDecimal("78000.00"), new CompanyCarDto(1L, "MyTestCompany"), Calendar.getInstance());
+        ListCarDto listCarDto2 = new ListCarDto(2L, "CarName2", new BigDecimal("88000.00"), new CompanyCarDto(1L, "MyTestCompany"), Calendar.getInstance());
         when(this.carService.listCars())
                 .thenReturn(List.of(listCarDto1, listCarDto2));
 
@@ -77,7 +76,7 @@ class CarControllerTest {
 
     @Test
     void haveToReturnSuccess_inFindCardById() throws JsonProcessingException {
-        FindCarDto findCarDto = new FindCarDto(1L, Calendar.getInstance(), Calendar.getInstance(), new BigDecimal("150000"), "CarName", "MyTestCompany", 2022);
+        FindCarDto findCarDto = new FindCarDto(1L, Calendar.getInstance(), Calendar.getInstance(), new BigDecimal("150000"), "CarName", new CompanyCarDto(1L, "MyTestCompany"), 2022);
 
         when(this.carService.findCarById(1L))
                 .thenReturn(findCarDto);
@@ -123,8 +122,8 @@ class CarControllerTest {
 
     @Test
     void haveToReturnSuccess_inSave() throws JsonProcessingException {
-        var saveCarDto = new CreateCarDto(null, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"), null, null);
-        var carDtoSaved = new CreateCarDto(1L, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"), Calendar.getInstance(), Calendar.getInstance());
+        var saveCarDto = new CreateCarDto(null, "MyCarTest", new CompanyCarDto(1L, "MyTestCompany"), 2022, new BigDecimal("250000.00"), null, null);
+        var carDtoSaved = new CreateCarDto(1L, "MyCarTest", new CompanyCarDto(1L, "MyTestCompany"), 2022, new BigDecimal("250000.00"), Calendar.getInstance(), Calendar.getInstance());
 
         when(this.carService.save(saveCarDto))
                 .thenReturn(carDtoSaved);
@@ -180,8 +179,39 @@ class CarControllerTest {
     }
 
     @Test
+    void haveToReturnError400WhenNotSetCompanyInBody_inSave() {
+        var saveCarDto = new CreateCarDto(null, "Tests", new CompanyCarDto(), 2018, new BigDecimal("190000.0"), null, null);
+        var now = Calendar.getInstance();
+
+        doThrow(new BadRequestException("Is need to set company id."))
+                .when(this.carService)
+                .save(saveCarDto);
+
+        var errors = Set.of("Is need to set company id.");
+
+        var errorDto = given().contentType(JSON)
+                .accept(JSON)
+                .body(saveCarDto)
+                .when()
+                .post("api/cars")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(BAD_REQUEST.value())
+                .contentType(JSON)
+                .extract()
+                .as(ErrorExceptionDto.class);
+
+        assertEquals(errors.size(), errorDto.getMessages().size());
+        assertTrue(errorDto.getMessages().containsAll(errors));
+        assertEquals("/api/cars", errorDto.getPath());
+        assertEquals(BAD_REQUEST.toString(), errorDto.getStatusCode());
+        assertTrue(now.before(errorDto.getTimestamp()));
+    }
+
+    @Test
     void haveToReturnError400WhenSetInvalidFieldsNumberInBody_inSave() {
-        var saveCarDto = new CreateCarDto(null, "Tests", "MyCompanyTest", 1800, new BigDecimal("0.0"), null, null);
+        var saveCarDto = new CreateCarDto(null, "Tests", new CompanyCarDto(1L, "MyTestCompany"), 1800, new BigDecimal("0.0"), null, null);
         var now = Calendar.getInstance();
 
         var errors = Set.of(
@@ -210,9 +240,40 @@ class CarControllerTest {
     }
 
     @Test
+    void haveToReturnError404WhenSetInvalidCompanyIdInBody_inSave() {
+        var saveCarDto = new CreateCarDto(null, "Tests", new CompanyCarDto(1L, "MyTestCompany"), 2018, new BigDecimal("190000.0"), null, null);
+        var now = Calendar.getInstance();
+
+        doThrow(new NotFoundException(COMPANY_NOT_FOUND_ID_FORMAT, 1L))
+                .when(this.carService)
+                .save(saveCarDto);
+
+        var errors = Set.of(String.format(COMPANY_NOT_FOUND_ID_FORMAT, 1L));
+
+        var errorDto = given().contentType(JSON)
+                .accept(JSON)
+                .body(saveCarDto)
+                .when()
+                .post("api/cars")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(NOT_FOUND.value())
+                .contentType(JSON)
+                .extract()
+                .as(ErrorExceptionDto.class);
+
+        assertEquals(errors.size(), errorDto.getMessages().size());
+        assertTrue(errorDto.getMessages().containsAll(errors));
+        assertEquals("/api/cars", errorDto.getPath());
+        assertEquals(NOT_FOUND.toString(), errorDto.getStatusCode());
+        assertTrue(now.before(errorDto.getTimestamp()));
+    }
+
+    @Test
     void haveToReturnSuccess_inUpdate() throws JsonProcessingException {
-        var updateCarDto = new UpdateCarDto(1L, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"),  null);
-        var carDtoUpdated = new UpdateCarDto(1L, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"), Calendar.getInstance());
+        var updateCarDto = new UpdateCarDto(1L, "MyCarTest", new CompanyCarDto(1L, "MyTestCompany"), 2022, new BigDecimal("250000.00"),  null);
+        var carDtoUpdated = new UpdateCarDto(1L, "MyCarTest", new CompanyCarDto(1L, "MyTestCompany"), 2022, new BigDecimal("250000.00"), Calendar.getInstance());
 
         when(this.carService.update(updateCarDto))
                 .thenReturn(carDtoUpdated);
@@ -270,7 +331,7 @@ class CarControllerTest {
 
     @Test
     void haveToReturn404WhenUpdateInvalidId_inUpdate() {
-        var updateCarDto = new UpdateCarDto(1L, "MyCarTest", "MyCompany", 2022, new BigDecimal("250000.00"),  null);
+        var updateCarDto = new UpdateCarDto(1L, "MyCarTest", new CompanyCarDto(1L, "MyTestCompany"), 2022, new BigDecimal("250000.00"),  null);
         var now = Calendar.getInstance();
 
         doThrow(new NotFoundException(CAR_NOT_FOUND_ID_FORMAT, 1L))
@@ -299,7 +360,7 @@ class CarControllerTest {
 
     @Test
     void haveToReturnError400WhenSetInvalidFieldsNumberInBody_inUpdate() {
-        var updateCarDto = new UpdateCarDto(0L, "Tests", "MyCompanyTest", 1800, new BigDecimal("0.0"), null);
+        var updateCarDto = new UpdateCarDto(0L, "Tests", new CompanyCarDto(1L, "MyTestCompany"), 1800, new BigDecimal("0.0"), null);
         var now = Calendar.getInstance();
 
         var errors = Set.of(
