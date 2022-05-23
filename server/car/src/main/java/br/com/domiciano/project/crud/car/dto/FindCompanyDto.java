@@ -5,13 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.util.Calendar;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FindCarDto {
+public class FindCompanyDto {
 
     private Long id;
 
@@ -21,9 +20,7 @@ public class FindCarDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Calendar dateUpdated;
 
-    private BigDecimal price;
+    private String description;
     private String name;
-    private CompanyCarDto company;
-    private Integer year;
 
 }

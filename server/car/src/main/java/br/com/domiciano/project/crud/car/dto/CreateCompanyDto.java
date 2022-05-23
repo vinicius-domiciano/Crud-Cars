@@ -3,6 +3,7 @@ package br.com.domiciano.project.crud.car.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,33 +13,34 @@ import java.util.Calendar;
 
 @Data
 @NoArgsConstructor
-public class CadastroMarcaCarroDto {
+@AllArgsConstructor
+public class CreateCompanyDto {
 
     @JsonIgnore
     private Long id;
 
-    private String descricaoMarca;
+    private String description;
 
     @NotEmpty(message = "Necessario informar o nomeMarca")
     @NotNull(message = "Necessario informar o nomeMarca")
-    private String nomeMarca;
+    private String name;
 
     @JsonIgnore
-    private Calendar dataCadastro;
+    private Calendar dateCreated;
 
     @JsonIgnore
-    private Calendar dataAtualizacao;
+    private Calendar dateUpdated;
 
-    @JsonGetter("dataCadastro")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone = "America/Sao_Paulo")
-    public Calendar getDataCadastro() {
-        return dataCadastro;
+    @JsonGetter("dateCreated")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    public Calendar getDateCreated() {
+        return dateCreated;
     }
 
-    @JsonGetter("dataAtualizacao")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone = "America/Sao_Paulo")
-    public Calendar getDataAtualizacao() {
-        return dataAtualizacao;
+    @JsonGetter("dateUpdated")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    public Calendar getDateUpdated() {
+        return dateUpdated;
     }
 
     @JsonGetter("id")

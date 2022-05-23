@@ -17,7 +17,7 @@ import java.util.Calendar;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaveCarDto {
+public class CreateCarDto {
 
     @JsonIgnore
     private Long id;
@@ -26,9 +26,8 @@ public class SaveCarDto {
     @NotNull(message = "Necessario informar o nome")
     private String name;
 
-    @NotEmpty(message = "Necessario informar a marca")
     @NotNull(message = "Necessario informar a marca")
-    private String company;
+    private CompanyCarDto company;
 
     @Min(value = 1900, message = "Necessario informar o ano maior que 1900")
     @NotNull(message = "Necessario informar o ano")
@@ -45,13 +44,13 @@ public class SaveCarDto {
     private Calendar dateUpdated;
 
     @JsonGetter("dateCreated")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public Calendar getDateCreated() {
         return dateCreated;
     }
 
     @JsonGetter("dateUpdated")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public Calendar getDateUpdated() {
         return dateUpdated;
     }

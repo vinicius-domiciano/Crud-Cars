@@ -41,7 +41,7 @@ public class ExceptionHandle extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BaseRestException.class)
     private ResponseEntity<ErrorExceptionDto> handleBaseRestException(BaseRestException e, ServletWebRequest request) {
         var response = new ErrorExceptionDto(
-                Set.of(e.getMensagem()),
+                Set.of(e.getMessage()),
                 request.getRequest().getRequestURI(),
                 e.getHttpStatus().toString(),
                 Calendar.getInstance()

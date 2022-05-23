@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 
 @Data
@@ -14,10 +15,10 @@ public class ListCarDto {
 
     private Long id;
     private String name;
-    private Double price;
-    private String company;
+    private BigDecimal price;
+    private CompanyCarDto company;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Calendar dateCreated;
 
 }

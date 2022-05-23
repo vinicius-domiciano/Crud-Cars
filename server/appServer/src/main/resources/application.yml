@@ -1,12 +1,13 @@
 spring:
   application:
-    name: LojaCarrosApp
+    name: CarsApp
   datasource:
-    url: jdbc:mysql://${DB_HOST}/crud_car?serverTimezone=America/Sao_Paulo&createDatabaseIfNotExist=true
-    username: ${DB_USER}
-    password: ${DB_PASS}
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/crud_car?serverTimezone=America/Sao_Paulo&createDatabaseIfNotExist=true
+    username: ${DB_USER:root}
+    password: ${DB_PASS:admin}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     database: MYSQL
     show-sql: true
     hibernate:
