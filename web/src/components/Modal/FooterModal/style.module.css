@@ -1,0 +1,19 @@
+.footer {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 10;
+    padding-top: 16px;
+    border-top: 1px solid rgba(158, 158, 158, 0.26);
+    display: grid;
+    justify-content: end;
+    align-items: center;
+    grid-auto-flow: column;
+    grid-auto-columns: 165px;
+    gap: 18px;
+}
+
+.button {
+    height: 48px;
+    border-radius: 4px;
+}

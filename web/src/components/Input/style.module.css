@@ -1,0 +1,78 @@
+.inputError {
+    background-color: rgba(255, 255, 255);
+    border: 1px solid rgb(217, 53, 53);
+    border-radius: 4px 4px 0px 0px;
+}
+
+.input {
+    background-color: rgba(158, 158, 158, 0.26);
+    border: 0px;
+    border-radius: 4px;
+}
+
+.input,
+.inputError {
+    width: 361px;
+    height: 48px;
+    padding: 0px 16px;
+    font-size: 16px;
+}
+
+.input:not([value=""]),
+.inputError:not([value=""]) {
+    padding-top: calc(19px / 2);
+}
+
+.inputError:hover,
+.inputError:focus {
+    outline: none;
+}
+
+.input:hover,
+.input:focus {
+    box-shadow: 0 0 0 4px rgba(48, 127, 226, 0.6);
+    background-color: rgb(255, 255, 255);
+}
+
+.input:focus {
+    border: solid rgb(48, 127, 226) 1px;
+    outline: none;
+}
+
+.floatingLabel {
+    font-size: 16px;
+    position: absolute;
+    pointer-events: none;
+    left: 16px;
+    top: calc(24px - (19px / 2));
+    transition: 0.2s ease all;
+    color: rgb(112, 112, 112);
+}
+
+.input:not([value=""]) ~ .floatingLabel,
+.input:focus ~ .floatingLabel,
+.inputError:not([value=""]) ~ .floatingLabel {
+    top: 6px;
+    font-size: 11px;
+    opacity: 1;
+    color: rgb(153, 153, 153);
+}
+
+.errorBox {
+    width: 361px;
+    height: auto;
+    border: 1px solid rgb(217, 53, 53);
+    background-color: rgb(217, 53, 53);
+    border-radius: 0px 0px 4px 4px;
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    padding: 4px 16px;
+    display: flex;
+}
+
+.warning {
+    width: 16px;
+    height: 16px;
+    background-image: url("/public/icons/svg/warning.svg");
+    margin-right: 4px;
+}

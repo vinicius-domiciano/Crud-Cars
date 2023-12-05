@@ -1,0 +1,16 @@
+.modalContainer {
+    left: 0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.48);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modalBox {
+    border-radius: 1rem;
+    background-color: #f2f2f2;
+}
