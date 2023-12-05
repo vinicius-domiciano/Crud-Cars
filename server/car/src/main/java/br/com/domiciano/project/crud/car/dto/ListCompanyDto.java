@@ -11,5 +11,6 @@ public class ListCompanyDto {
 
     private Long id;
     private String name;
+    private String description;
 
 }

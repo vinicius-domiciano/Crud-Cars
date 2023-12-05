@@ -1,6 +1,11 @@
 spring:
   application:
     name: CarsApp
+  server:
+    servlet:
+      encoding:
+        charset: UTF-8
+        force-response: true
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/crud_car?serverTimezone=America/Sao_Paulo&createDatabaseIfNotExist=true
     username: ${DB_USER:root}

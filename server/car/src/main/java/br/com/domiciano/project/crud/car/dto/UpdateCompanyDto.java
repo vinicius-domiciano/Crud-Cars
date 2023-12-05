@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -17,12 +16,6 @@ public class UpdateCompanyDto {
     @NotNull(message = "Necessario informar o id")
     private Long id;
 
-    @NotEmpty(message = "Necessario informar o nome")
-    @NotNull(message = "Necessario informar o nome")
-    private String name;
-
-    @NotEmpty(message = "Necessario informar a descrição")
-    @NotNull(message = "Necessario informar a descrição")
-    private String description;
+    private boolean allowed;
 
 }
