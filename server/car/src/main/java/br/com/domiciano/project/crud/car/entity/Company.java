@@ -36,4 +36,8 @@ public class Company extends Base implements Serializable {
         this.name = name;
         this.allowed = allowed;
     }
+
+    public Company(Long id) {
+        setId(id);
+    }
 }

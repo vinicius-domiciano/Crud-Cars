@@ -96,6 +96,7 @@ class CompanyServiceImplTest {
 
         assertEquals(companyDto.getId(), response.getId());
         assertEquals(companyDto.getName(), response.getName());
+        assertEquals(companyDto.isAllowed(), response.isAllowed());
         assertEquals(companyDto.getDateCreated(), response.getDateCreated());
         assertEquals(0, companyDto.getDateCreated().compareTo(response.getDateCreated()));
         assertEquals(companyDto.getDateUpdated(), response.getDateUpdated());

@@ -5,13 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FindCarDto {
+public class FindCarDto implements Serializable {
 
     private Long id;
 
@@ -21,9 +22,14 @@ public class FindCarDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Calendar dateUpdated;
 
-    private BigDecimal price;
+    private BigDecimal salePrice;
     private String name;
     private CompanyCarDto company;
     private Integer year;
+
+    private BigDecimal fipePrice;
+    private String fipeCode;
+    private String referenceMonth;
+    private String fuel;
 
 }
