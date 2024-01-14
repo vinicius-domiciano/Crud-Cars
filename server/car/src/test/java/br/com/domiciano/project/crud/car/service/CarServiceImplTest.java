@@ -3,15 +3,17 @@ package br.com.domiciano.project.crud.car.service;
 import br.com.domiciano.project.crud.base.exceptions.BadRequestException;
 import br.com.domiciano.project.crud.base.exceptions.NotFoundException;
 import br.com.domiciano.project.crud.car.annotation.CustomInitTest;
-import br.com.domiciano.project.crud.car.dto.*;
+import br.com.domiciano.project.crud.car.dto.SaveCarDto;
+import br.com.domiciano.project.crud.car.dto.UpdateCarDto;
 import br.com.domiciano.project.crud.car.entity.Car;
 import br.com.domiciano.project.crud.car.entity.Company;
 import br.com.domiciano.project.crud.car.repository.CarRepository;
+import br.com.domiciano.project.crud.car.repository.CompanyRepository;
 import br.com.domiciano.project.crud.car.service.impl.CarServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
@@ -19,25 +21,26 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static br.com.domiciano.project.crud.base.helpers.ExceptionsIndices.CAR_NOT_FOUND_ID_FORMAT;
 import static br.com.domiciano.project.crud.base.helpers.ExceptionsIndices.COMPANY_NOT_FOUND_ID_FORMAT;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.standaloneSetup;
-import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
 @CustomInitTest
+@DisplayName("Car service tests")
 class CarServiceImplTest {
 
     @MockBean
     private CarRepository carRepository;
 
     @MockBean
-    private CompanyCarService companyCarService;
+    private CompanyRepository companyRepository;
 
     private final CarServiceImpl carService;
 
@@ -52,67 +55,89 @@ class CarServiceImplTest {
     }
 
     @Test
-    void haveToListCarsAndReturnDto_inListCars() {
+    @DisplayName("List all: Should Return a list of cars")
+    void shouldReturnAListOfCarsAndReturnDto_inListCars() {
+        final Company company = mock(Company.class);
+        final Calendar date = Calendar.getInstance();
         var cars = List.of(
-                new Car(1L, Calendar.getInstance(), Calendar.getInstance(), "FirstCar", 2022, new BigDecimal("20000.00"), new Company(1L, "MyTestCompany")),
-                new Car(2L, Calendar.getInstance(), Calendar.getInstance(), "SecondCar", 2022, new BigDecimal("20000.00"), new Company(1L, "MyTestCompany")),
-                new Car(3L, Calendar.getInstance(), Calendar.getInstance(), "ThirdCar", 2022, new BigDecimal("20000.00"), new Company(1L, "MyTestCompany"))
+                new Car(1L, date, date, "FirstCar", 2022, new BigDecimal("20000.00"), company),
+                new Car(2L, date, date, "SecondCar", 2022, new BigDecimal("20000.00"), company),
+                new Car(3L, date, date, "ThirdCar", 2022, new BigDecimal("20000.00"), company)
         );
 
-        when(this.carRepository.findAll())
-                .thenReturn(cars);
-
-        var resultReturn = List.of(
-                new ListCarDto(1L, "FirstCar", new BigDecimal("20000.00"), new CompanyCarDto(1L, "MyTestCompany"), Calendar.getInstance()),
-                new ListCarDto(1L, "SecondCar", new BigDecimal("20000.00"), new CompanyCarDto(1L, "MyTestCompany"), Calendar.getInstance()),
-                new ListCarDto(1L, "ThirdCar", new BigDecimal("20000.00"), new CompanyCarDto(1L, "MyTestCompany"), Calendar.getInstance())
-        );
+        when(this.carRepository.findAll()).thenReturn(cars);
 
         var carsDto = this.carService.listCars();
 
-        assertEquals(carsDto.size(), resultReturn.size());
-        assertTrue(this.getIds(carsDto).containsAll(this.getIds(resultReturn)));
+        assertEquals(carsDto.size(), cars.size());
+
+        Long[] id = getIdArray(cars);
+        Long[] ids = getIdArray(carsDto);
+        assertArrayEquals(id, ids);
     }
 
     @Test
+    @DisplayName("List all: Should return a empty list")
     void haveToReturnEmptyList_inListCars() {
-        when(this.carRepository.findAll())
-                .thenReturn(new ArrayList<>());
-
+        when(this.carRepository.findAll()).thenReturn(new ArrayList<>());
         var cars = this.carService.listCars();
 
         assertTrue(cars.isEmpty());
     }
 
-    private List<Long> getIds(List<ListCarDto> carsDto) {
-        return carsDto.stream()
-                .map(ListCarDto::getId)
-                .collect(toList());
+    public <T> Long[] getIdArray(List<T> list) {
+        return list.parallelStream().map(t -> {
+            try {
+                return t.getClass().getDeclaredField("id").get(Long.class);
+            } catch (Exception e) {
+                return 0L;
+            }
+        }).toArray(Long[]::new);
     }
 
     @Test
-    void haveToReturnFindCarDto_inFindById() {
+    @DisplayName("Find by id: Should return a car")
+    void shouldReturnFindCarDto_inFindById() {
         var now = Calendar.getInstance();
+        final BigDecimal price = new BigDecimal("199000.00");
+        final Company company = mock(Company.class);
+        final Long id = 100L;
 
-        when(this.carRepository.findById(1L))
-                .thenReturn(Optional.of(new Car(1L, now, now, "HelloWorld", 2022, new BigDecimal("25.00"), new Company(1L, "MyTestCompany"))));
+        when(this.carRepository.findById(1L)).thenReturn(Optional.of(new Car(
+                id,
+                now,
+                now,
+                "HelloWorld",
+                2022,
+                price,
+                company,
+                price,
+                "001",
+                "December, 2022",
+                "D",
+                "Disel"
+        )));
 
-        var response = new CreateCarDto(1L, "HelloWorld", new CompanyCarDto(1L, "MyTestCompany"), 2022, new BigDecimal("25.00"), now, now);
         var carDto = this.carService.findCarById(1L);
 
-        assertEquals(response.getId(), carDto.getId());
-        assertEquals(response.getName(), carDto.getName());
-        assertEquals(response.getCompany(), carDto.getCompany());
-        assertEquals(response.getYear(), carDto.getYear());
-        assertEquals(response.getPrice(), carDto.getPrice());
-        assertEquals(response.getDateCreated(), carDto.getDateCreated());
-        assertEquals(response.getDateUpdated(), carDto.getDateUpdated());
+        assertEquals(id, carDto.getId());
+        assertEquals(now, carDto.getDateCreated());
+        assertEquals(now, carDto.getDateUpdated());
+        assertEquals("HelloWorld", carDto.getName());
+        assertEquals((Integer) 2022, carDto.getYear());
+        assertEquals(price, carDto.getSalePrice());
+        assertEquals(price, carDto.getFipePrice());
+        assertEquals("001", carDto.getFipeCode());
+        assertEquals("December, 2022", carDto.getReferenceMonth());
+        assertEquals("Disel", carDto.getFuel());
+
     }
 
     @Test
-    void haveToReturnThrowNotFoundCar_inFindCarById() {
+    @DisplayName("Find by id: Should return error when id was not found")
+    void shouldReturnThrowNotFoundCar_inFindCarById() {
         when(this.carRepository.findById(1L))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         var isError = Boolean.FALSE;
         var message = "";
@@ -120,7 +145,7 @@ class CarServiceImplTest {
 
         try {
             this.carService.findCarById(1L);
-        } catch(NotFoundException e) {
+        } catch (NotFoundException e) {
             isError = Boolean.TRUE;
             message = e.getMessage();
             statusCode = e.getHttpStatus().value();
@@ -132,32 +157,42 @@ class CarServiceImplTest {
     }
 
     @Test
-    void haveToSaveAndReturnDtoObject_inSaveCar() {
+    @DisplayName("Save: Should save a car")
+    void shouldSaveAndReturnDtoObject_inSaveCar() {
         var now = Calendar.getInstance();
+        when(companyRepository.findById(any())).thenReturn(Optional.of(mock(Company.class)));
 
-        var request = new CreateCarDto(null, "HelloWorld", new CompanyCarDto(1L, "MyTestCompany"), 2022, new BigDecimal("25.00"), null, null);
-        var response = new CreateCarDto(1L, "HelloWorld", new CompanyCarDto(1L, "MyTestCompany"), 2022, new BigDecimal("25.00"), now, now);
+        var request = new SaveCarDto("NewCar", new BigDecimal("200000.00"), new BigDecimal("300000.00"), 2L, 2022, "001", "December, 2022", "D", "Disel");
 
-        var requestRepository = new Car("HelloWorld", 2022, new BigDecimal("25.00"), new Company(1L,"MyTestCompany"));
-        var responseRepository = new Car(1L, now, now, "HelloWorld", 2022, new BigDecimal("25.00"), new Company(1L,"MyTestCompany"));
+        AtomicReference<Car> carSave = new AtomicReference<>();
+        when(this.carRepository.save(any())).thenAnswer(invocationOnMock -> {
+            final Car car = invocationOnMock.getArgument(0);
+            car.setId(1L);
+            car.setDateCreated(now);
+            car.setDateUpdated(now);
 
-        when(this.carRepository.save(requestRepository))
-                .thenReturn(responseRepository);
+            carSave.set(car);
 
-        var result = this.carService.save(request);
+            return car;
+        });
 
-        assertEquals(response.getId(), result.getId());
-        assertEquals(response.getName(), result.getName());
-        assertEquals(response.getCompany(), result.getCompany());
-        assertEquals(response.getYear(), result.getYear());
-        assertEquals(response.getPrice(), result.getPrice());
-        assertEquals(response.getDateCreated(), result.getDateCreated());
-        assertEquals(response.getDateUpdated(), result.getDateUpdated());
+        var response = this.carService.save(request);
+
+        assertEquals(carSave.get().getId(), response.getId());
+        assertEquals(request.getName(), response.getName());
+        assertEquals(request.getSalePrice(), response.getSalePrice());
+        assertEquals(request.getFipePrice(), response.getFipePrice());
+
+        assertEquals(request.getFuel(), response.getFuel());
+        assertEquals(request.getYear(), response.getYear());
+        assertEquals(carSave.get().getDateCreated(), response.getDateCreated());
+        assertEquals(carSave.get().getDateUpdated(), response.getDateUpdated());
     }
 
     @Test
-    void haveToReturnErrorBadRequestWhenNotToSetCompanyAndNotSetCompanyId_inSaveCar() {
-        var request = new CreateCarDto(null, "HelloWorld", null, 2022, new BigDecimal("25.00"), null, null);
+    @DisplayName("Save: when set company id null or less than 1 should return error")
+    void shouldReturnErrorBadRequestWhenNotToSetCompanyAndNotSetCompanyId_inSaveCar() {
+        var request = new SaveCarDto();
         BadRequestException exception = assertThrows(
                 "Expected carService.save(request) to throw",
                 BadRequestException.class,
@@ -167,7 +202,9 @@ class CarServiceImplTest {
         assertEquals(400, exception.getHttpStatus().value());
         assertEquals("Is need to set company id.", exception.getMessage());
 
-        var request2 = new CreateCarDto(null, "HelloWorld", new CompanyCarDto(), 2022, new BigDecimal("25.00"), null, null);
+        var request2 = new SaveCarDto();
+        request2.setCompanyId(0L);
+
         BadRequestException exception2 = assertThrows(
                 "Expected carService.save(request) to throw",
                 BadRequestException.class,
@@ -179,12 +216,11 @@ class CarServiceImplTest {
     }
 
     @Test
-    void haveToReturnErrorNotFoundCompany_inSaveCar() {
-        doThrow(new NotFoundException(COMPANY_NOT_FOUND_ID_FORMAT, 1L))
-                .when(this.companyCarService)
-                .findById(1L);
+    @DisplayName("Save: Should return error when company wasn't fount")
+    void shouldReturnErrorNotFoundCompany_inSaveCar() {
+        var request = new SaveCarDto();
+        request.setCompanyId(1L);
 
-        var request = new CreateCarDto(null, "HelloWorld", new CompanyCarDto(1L, "ABCDE"), 2022, new BigDecimal("25.00"), null, null);
         NotFoundException exception = assertThrows(
                 "Expected carService.save(request) to throw",
                 NotFoundException.class,
@@ -196,38 +232,46 @@ class CarServiceImplTest {
     }
 
     @Test
-    void haveToUpdateAndReturnDtoObject_inUpdateCar() {
-        var car = new Car(1L, Calendar.getInstance(), Calendar.getInstance(), "HelloWorld", 2022, new BigDecimal("25.00"), new Company(1L, "MyTestCompany"));
+    @DisplayName("Update: Should update a car")
+    void shouldUpdateAndReturnDtoObject_inUpdateCar() {
+        final Company company = new Company(1L, false, "Company");
+        AtomicReference<Car> carAtomicReference = new AtomicReference<>(new Car(1L, Calendar.getInstance(), Calendar.getInstance(), "HelloWorld", 2022, new BigDecimal("25.00"), company));
+        when(this.carRepository.findById(1L)).thenReturn(Optional.of(carAtomicReference.get()));
 
-        when(this.carRepository.findById(1L))
-                .thenReturn(Optional.of(car));
+        var request = new UpdateCarDto(1L, false, "MyName", 2022, new BigDecimal("25.00"), 1L, new BigDecimal("24.00"), "001", "November, 2023", "D", "Disel");
 
-        var request = new UpdateCarDto(1L, "MyName", new CompanyCarDto(1L, "MyTestCompany"), 2022, new BigDecimal("25.00"), null);
-        var carUpdate = new Car(1L, null, null, "MyName", 2022, new BigDecimal("25.00"), new Company(1L, "MyTestCompany"));
+        when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
 
-        when(this.carRepository.save(carUpdate))
-                .thenReturn(carUpdate);
+        when(this.carRepository.save(any())).thenAnswer(invocationOnMock -> {
+            carAtomicReference.set(invocationOnMock.getArgument(0));
+            return carAtomicReference.get();
+        });
 
         var response = this.carService.update(request);
+        assertEquals(request, response);
 
-        assertEquals(response.getId(), request.getId());
-        assertEquals(response.getName(), request.getName());
-        assertNotEquals(response.getName(), car.getName());
-        assertEquals(response.getCompany(), request.getCompany());
-        assertEquals(response.getYear(), request.getYear());
-        assertEquals(response.getPrice(), request.getPrice());
-        assertNotEquals(response.getDateUpdated(), car.getDateUpdated());
+        var car = carAtomicReference.get();
+        assertEquals(request.getId(), car.getId());
+        assertEquals("MyName", car.getName());
+        assertEquals((Integer) 2022, car.getYear());
+        assertEquals(new BigDecimal("25.00"), car.getSalePrice());
+        assertEquals((Long) 1L, car.getCompany().getId());
+        assertEquals(new BigDecimal("24.00"), car.getFipePrice());
+        assertEquals("001", car.getFipeCode());
+        assertEquals("November, 2023", car.getReferenceMonth());
+        assertEquals("D", car.getFuelAcronym());
+        assertEquals("Disel", car.getFuel());
     }
 
     @Test
-    void haveToReturnErrorNotFoundCar_inUpdateCar() {
-        when(this.carRepository.findById(1L))
-                .thenReturn(Optional.empty());
+    @DisplayName("Update: Should return error when car wasn't fount")
+    void shouldReturnErrorNotFoundCar_inUpdateCar() {
+        when(this.carRepository.findById(1L)).thenReturn(Optional.empty());
 
-        when(this.companyCarService.findById(1L))
-                .thenReturn(new FindCompanyDto());
+        var request = new UpdateCarDto();
+        request.setCompanyId(1L);
+        request.setId(1L);
 
-        var request = new UpdateCarDto(1L, "MyName", new CompanyCarDto(1L, "MyTestCompany"), 2022, new BigDecimal("25.00"), null);
         NotFoundException exception = assertThrows(
                 "Expected carService.update(request) to throw",
                 NotFoundException.class,
@@ -239,8 +283,9 @@ class CarServiceImplTest {
     }
 
     @Test
-    void haveToReturnErrorBadRequestWhenNotToSetCompanyAndNotSetCompanyId_inUpdateCar() {
-        var request = new UpdateCarDto(1L, "MyName",null, 2022, new BigDecimal("25.00"), null);
+    @DisplayName("Update: when set company id null or less than 1 should return error.")
+    void shouldReturnErrorBadRequestWhenNotToSetCompanyAndNotSetCompanyId_inUpdateCar() {
+        var request = new UpdateCarDto();
         BadRequestException exception = assertThrows(
                 "Expected carService.update(request) to throw",
                 BadRequestException.class,
@@ -250,7 +295,9 @@ class CarServiceImplTest {
         assertEquals(400, exception.getHttpStatus().value());
         assertEquals("Is need to set company id.", exception.getMessage());
 
-        var request2 = new UpdateCarDto(1L, "MyName",new CompanyCarDto(), 2022, new BigDecimal("25.00"), null);
+        var request2 = new UpdateCarDto();
+        request.setCompanyId(0L);
+
         BadRequestException exception2 = assertThrows(
                 "Expected carService.update(request) to throw",
                 BadRequestException.class,
@@ -262,12 +309,17 @@ class CarServiceImplTest {
     }
 
     @Test
-    void haveToReturnErrorNotFoundCompany_inUpdateCar() {
-        doThrow(new NotFoundException(COMPANY_NOT_FOUND_ID_FORMAT, 1L))
-                .when(this.companyCarService)
-                .findById(1L);
+    @DisplayName("Update: should return error um company wasn't found")
+    void shouldReturnErrorNotFoundCompany_inUpdateCar() {
+        doThrow(new NotFoundException(COMPANY_NOT_FOUND_ID_FORMAT, 1L)).when(this.companyRepository).findById(1L);
 
-        var request = new UpdateCarDto(1L, "MyName", new CompanyCarDto(1L, "MyTestCompany"), 2022, new BigDecimal("25.00"), null);
+        final Car car = mock(Car.class);
+        when(carRepository.findById(anyLong())).thenReturn(Optional.of(car));
+
+        var request = new UpdateCarDto();
+        request.setId(1L);
+        request.setCompanyId(1L);
+
         NotFoundException exception = assertThrows(
                 "Expected carService.update(request) to throw",
                 NotFoundException.class,
@@ -279,19 +331,16 @@ class CarServiceImplTest {
     }
 
     @Test
-    void haveToDeleteCar_inDeleteCar() {
-        var car = new Car(1L, Calendar.getInstance(), Calendar.getInstance(), "HelloWorld", 2022, new BigDecimal("25.00"), new Company(1L, "MyCompany"));
-
-        when(this.carRepository.findById(1L))
-                .thenReturn(Optional.of(car));
-
+    @DisplayName("Delete: should delete a car")
+    void shouldDeleteCar_inDeleteCar() {
+        when(this.carRepository.findById(1L)).thenReturn(Optional.of(mock(Car.class)));
         assertDoesNotThrow(() -> this.carService.delete(1L));
     }
 
     @Test
-    void haveToReturnNotFound_inDeleteCar() {
-        when(this.carRepository.findById(2L))
-                .thenReturn(Optional.empty());
+    @DisplayName("Delete: should return error when car id wasn't fount")
+    void shouldReturnNotFound_inDeleteCar() {
+        when(this.carRepository.findById(2L)).thenReturn(Optional.empty());
 
         var isError = Boolean.FALSE;
         var message = "";
@@ -299,7 +348,7 @@ class CarServiceImplTest {
 
         try {
             this.carService.delete(2L);
-        } catch(NotFoundException e) {
+        } catch (NotFoundException e) {
             isError = Boolean.TRUE;
             message = e.getMessage();
             statusCode = e.getHttpStatus().value();

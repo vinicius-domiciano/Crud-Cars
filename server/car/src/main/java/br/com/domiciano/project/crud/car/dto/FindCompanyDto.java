@@ -5,12 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FindCompanyDto {
+public class FindCompanyDto implements Serializable {
 
     private Long id;
 
@@ -20,7 +21,7 @@ public class FindCompanyDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Calendar dateUpdated;
 
-    private String description;
     private String name;
+    private boolean allowed;
 
 }

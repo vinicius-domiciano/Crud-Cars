@@ -1,0 +1,13 @@
+#subContainer {
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+}
+
+#fixFiltersContainer {
+    width: 100%;
+    height: 64px;
+    background-color: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 0 6px rgba(184, 184, 184, 0.32);
+}

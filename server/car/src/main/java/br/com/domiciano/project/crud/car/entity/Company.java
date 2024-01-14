@@ -18,24 +18,26 @@ import java.util.Set;
 @Table(name = "company")
 public class Company extends Base implements Serializable {
 
-    @Column(name = "name", nullable = false)
     private String name;
-
-    @Column(name = "description")
-    private String description;
+    private boolean allowed;
 
     @Fetch(FetchMode.SELECT)
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Car> cars;
 
-    public Company(Long id, Calendar dateCreated, Calendar dateUpdated, String name, String description) {
+    public Company(Long id, Calendar dateCreated, Calendar dateUpdated, String name, boolean allowed) {
         super(id, dateCreated, dateUpdated);
         this.name = name;
-        this.description = description;
+        this.allowed = allowed;
     }
 
-    public Company(long id, String name) {
+    public Company(long id, boolean allowed, String name) {
         this.setId(id);
         this.name = name;
+        this.allowed = allowed;
+    }
+
+    public Company(Long id) {
+        setId(id);
     }
 }

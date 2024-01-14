@@ -1,0 +1,59 @@
+:root {
+    --color-primary: #5c9df2;
+    --color-primary-dark: #1e6fd9;
+    --color-container: #f6f6f6;
+    --color-button: #0d65d9;
+    --menu-vertical-width: 64px;
+    --container-width: calc(100vw - var(--menu-vertical-width));
+}
+
+* {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    position: relative;
+    max-width: 100%;
+    font-family: "Roboto", sans-serif;
+}
+
+.container {
+    width: var(--container-width);
+    min-height: 100vh;
+    height: auto;
+    margin-left: var(--menu-vertical-width);
+    background-color: var(--color-container);
+}
+
+h1 {
+    font-size: 2.8rem;
+}
+
+h2 {
+    font-size: 2.4rem;
+}
+
+h3 {
+    font-size: 2rem;
+    text-align: center;
+}
+
+.titleCrud {
+    font-size: 1.64rem;
+    color: #828282;
+    margin: 16px 0px;
+}
+
+button {
+    font-size: 1rem;
+    font-weight: bold;
+    border: 0px;
+    cursor: pointer;
+}
+
+.icon {
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}

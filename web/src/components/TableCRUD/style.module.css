@@ -1,0 +1,58 @@
+#container {
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 4px;
+    height: auto;
+    margin-top: 16px;
+    box-shadow: 0 0 4px rgba(184, 184, 184, 0.25);
+    padding: 12px;
+}
+
+.containerField,
+.containerValue {
+    width: 100%;
+    height: auto;
+    display: grid;
+    font-weight: bold;
+    text-align: center;
+}
+
+.containerField {
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    border-bottom: solid #e0e0e0 2px;
+    padding-bottom: 12px;
+}
+
+.containerValue {
+    grid-auto-rows: 50px;
+}
+
+.containerValue div,
+.containerField div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.4rem 0.2rem;
+}
+
+.fieldNameActions {
+    grid-auto-columns: 32px;
+    grid-auto-flow: column;
+    grid-template-rows: 32px;
+    grid-gap: 1.2rem;
+}
+
+.fieldNameActions span {
+    display: none;
+}
+
+.fieldNameActions button {
+    background-attachment: inherit;
+    background-repeat: no-repeat;
+    background-size: 56%;
+    background-position: center;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--color-primary-dark);
+}

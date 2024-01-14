@@ -1,0 +1,29 @@
+#menuContainer {
+    width: var(--menu-vertical-width);
+    height: 100vh;
+    background-color: var(--color-primary);
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: grid;
+    grid-template-columns: 48px;
+    grid-auto-rows: 48px;
+    padding: 8px;
+    row-gap: 20px;
+}
+
+.buttonMenu {
+    background-color: transparent;
+    background-attachment: inherit;
+    background-repeat: no-repeat;
+    background-size: 70%;
+    background-position: center;
+    border: 0px;
+    cursor: pointer;
+}
+
+.buttonMenu:hover,
+.selectedMenu {
+    background-color: rgba(255, 255, 255, 0.24);
+    border-radius: 4px;
+}

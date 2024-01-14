@@ -1,7 +1,6 @@
 package br.com.domiciano.project.crud.appserver.controller;
 
 import br.com.domiciano.project.crud.car.dto.UpdateCarDto;
-import br.com.domiciano.project.crud.car.dto.CreateCarDto;
 import br.com.domiciano.project.crud.car.dto.FindCarDto;
 import br.com.domiciano.project.crud.car.dto.ListCarDto;
 import br.com.domiciano.project.crud.car.service.CarService;
@@ -30,20 +29,9 @@ public class CarController {
         return new ResponseEntity<>(this.carService.findCarById(id), HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<CreateCarDto> save(@Valid @RequestBody CreateCarDto createCarDto) {
-        return new ResponseEntity<>(this.carService.save(createCarDto), HttpStatus.CREATED);
-    }
-
     @PutMapping
     public ResponseEntity<UpdateCarDto> update(@Valid @RequestBody UpdateCarDto updateCarDto) {
         return new ResponseEntity<>(this.carService.update(updateCarDto), HttpStatus.OK);
-    }
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping(value = "/{id}")
-    public void delete(@PathVariable(name = "id") Long id) {
-        this.carService.delete(id);
     }
 
 }
