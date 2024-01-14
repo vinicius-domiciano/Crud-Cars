@@ -16,7 +16,6 @@ import java.util.Calendar;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class Car extends Base implements Serializable {
 
     @Column(name = "name", nullable = false)
