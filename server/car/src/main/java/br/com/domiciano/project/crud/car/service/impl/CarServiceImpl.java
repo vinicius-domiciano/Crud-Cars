@@ -6,7 +6,6 @@ import br.com.domiciano.project.crud.car.entity.Car;
 import br.com.domiciano.project.crud.car.entity.Company;
 import br.com.domiciano.project.crud.car.exceptions.NeedToSetCompanyIdException;
 import br.com.domiciano.project.crud.car.exceptions.NotFoundCarException;
-import br.com.domiciano.project.crud.car.exceptions.NotFoundCompanyException;
 import br.com.domiciano.project.crud.car.repository.CarRepository;
 import br.com.domiciano.project.crud.car.repository.CompanyRepository;
 import br.com.domiciano.project.crud.car.service.CarService;
@@ -99,7 +98,8 @@ public class CarServiceImpl implements CarService {
     }
 
     private Company findCompanyById(Long id) {
-        return companyRepository.findById(id).orElseThrow(() -> new NotFoundCompanyException(id));
+        return companyRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(String.format("Company wasn't fount to id: %s", id)));
     }
 
 }
