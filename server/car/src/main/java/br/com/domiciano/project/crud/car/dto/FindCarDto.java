@@ -11,7 +11,6 @@ import java.util.Calendar;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class FindCarDto implements Serializable {
 
     private Long id;

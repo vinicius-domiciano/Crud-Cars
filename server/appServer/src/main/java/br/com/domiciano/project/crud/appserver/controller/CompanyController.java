@@ -30,7 +30,7 @@ public class CompanyController {
         return new ResponseEntity<>(companyCarService.findById(id), HttpStatus.OK);
     }
 
-    @PutMapping
+    @PatchMapping
     public ResponseEntity<UpdateCompanyDto> update(@RequestBody @Valid UpdateCompanyDto updateCompanyDto) {
         return new ResponseEntity<>(companyCarService.update(updateCompanyDto), HttpStatus.OK);
     }

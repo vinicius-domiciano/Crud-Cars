@@ -125,11 +125,11 @@ class CompanyServiceImplTest {
         when(this.companyRepository.findById(any())).thenReturn(Optional.of(company));
 
         var companyUpdated = new Company(1L, now, now, "CompanyName", true);
-        var request = new UpdateCompanyDto(1L, false);
+        var request = new UpdateCompanyDto(1L, false, "");
 
         when(this.companyRepository.save(any())).thenReturn(companyUpdated);
 
-        var companyDto = new UpdateCompanyDto(1L, true);
+        var companyDto = new UpdateCompanyDto(1L, true, "");
         var response = this.companyCarService.update(request);
         verify(this.companyRepository, times(1)).findById(any());
         verify(this.companyRepository, times(1)).save(any());
@@ -148,7 +148,7 @@ class CompanyServiceImplTest {
 
         when(companyRepository.findById(any())).thenReturn(Optional.empty());
 
-        var company = new UpdateCompanyDto(1L, false);
+        var company = new UpdateCompanyDto(1L, false, "");
         NotFoundException exception = assertThrows(
                 "Should return error",
                 NotFoundException.class,

@@ -46,6 +46,9 @@ public class CompanyCarServiceImpl implements CompanyCarService {
         Company company = this.repository.findById(updateCompanyDto.getId())
                 .orElseThrow(() -> new NotFoundCompanyException(updateCompanyDto.getId()));
 
+        company.setAllowed(updateCompanyDto.isAllowed());
+        company.setDescription(updateCompanyDto.getDescription());
+
         return mapper.map(this.repository.save(company), UpdateCompanyDto.class);
     }
 

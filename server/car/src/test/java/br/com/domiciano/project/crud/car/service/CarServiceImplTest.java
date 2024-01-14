@@ -74,6 +74,16 @@ class CarServiceImplTest {
         Long[] id = getIdArray(cars);
         Long[] ids = getIdArray(carsDto);
         assertArrayEquals(id, ids);
+
+        for (Car car : cars) {
+            var dto = carsDto.stream()
+                    .filter(d -> d.getId().equals(car.getId()))
+                    .findFirst()
+                    .get();
+
+            assertEquals(car.getName(), dto.getName());
+            assertEquals(car.getDateCreated(), dto.getDateCreated());
+        }
     }
 
     @Test
@@ -101,6 +111,10 @@ class CarServiceImplTest {
         var now = Calendar.getInstance();
         final BigDecimal price = new BigDecimal("199000.00");
         final Company company = mock(Company.class);
+
+        when(company.getId()).thenReturn(1L);
+        when(company.getName()).thenReturn("Company Test");
+
         final Long id = 100L;
 
         when(this.carRepository.findById(1L)).thenReturn(Optional.of(new Car(
@@ -130,6 +144,8 @@ class CarServiceImplTest {
         assertEquals("001", carDto.getFipeCode());
         assertEquals("December, 2022", carDto.getReferenceMonth());
         assertEquals("Disel", carDto.getFuel());
+        assertEquals((Long) 1L, carDto.getCompany().getId());
+        assertEquals("Company Test", carDto.getCompany().getName());
 
     }
 
@@ -221,14 +237,14 @@ class CarServiceImplTest {
         var request = new SaveCarDto();
         request.setCompanyId(1L);
 
-        NotFoundException exception = assertThrows(
+        BadRequestException exception = assertThrows(
                 "Expected carService.save(request) to throw",
-                NotFoundException.class,
+                BadRequestException.class,
                 () -> this.carService.save(request)
         );
 
-        assertEquals(404, exception.getHttpStatus().value());
-        assertEquals(String.format(COMPANY_NOT_FOUND_ID_FORMAT, 1L), exception.getMessage());
+        assertEquals(400, exception.getHttpStatus().value());
+        assertEquals("Company wasn't fount to id: 1", exception.getMessage());
     }
 
     @Test
