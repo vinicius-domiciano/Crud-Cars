@@ -16,21 +16,20 @@ import java.math.BigDecimal;
 public class SaveCarDto implements Serializable {
 
     @NotNull(message = "O nome deve ser preenchido")
-    @NotEmpty(message = "O nome nao deve star vazio")
+    @NotEmpty(message = "O nome nao deve estar vazio")
     private String name;
 
     @NotNull(message = "O preco de venda deve ser preenchido")
-    @Min(value = 1000, message = "O preco de venda deve ser maior que 1000")
+    @Min(value = 1000, message = "O preco de venda deve ser maior que 999")
     private BigDecimal salePrice;
 
-    @NotNull(message = "O preco da tabela file deve ser preenchido")
-    @Min(value = 1000, message = "O preco da tabela de venda deve ser maior que 1000")
+    @NotNull(message = "O preco da tabela fipe deve ser preenchido")
+    @Min(value = 1000, message = "O preco da tabela de venda deve ser maior que 999")
     private BigDecimal fipePrice;
 
     @NotNull(message = "O id da empresa deve ser preenchido")
     private Long companyId;
 
-    @NotNull(message = "O ano do carro deve ser preenchido")
     @Min(value = 1886, message = "O ano do carro deve ser maior que 1885")
     private int year;
 

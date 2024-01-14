@@ -19,4 +19,6 @@ public class UpdateCompanyDto implements Serializable {
 
     private boolean allowed;
 
+    private String description;
+
 }
